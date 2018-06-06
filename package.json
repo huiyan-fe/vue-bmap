@@ -1,0 +1,26 @@
+{
+  "name": "vue-bmap",
+  "version": "1.0.0",
+  "description": "Baidu Map components for Vue",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huiyan-fe/vue-bmap.git"
+  },
+  "keywords": [
+    "Baidu",
+    "Map",
+    "vue-bmap",
+    "BMap",
+    "mapv"
+  ],
+  "author": "Daniel Kong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/huiyan-fe/vue-bmap/issues"
+  },
+  "homepage": "https://github.com/huiyan-fe/vue-bmap#readme"
+}
