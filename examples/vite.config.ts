@@ -6,6 +6,8 @@ import { resolve } from 'path';
 export default defineConfig({
   root: __dirname,
   envDir: __dirname,
+  // 用相对路径引用资源：产物可部署到任意子路径（如 BOS 桶前缀），避免 /assets 指向域名根导致 404
+  base: './',
   plugins: [vue()],
   resolve: {
     alias: {
