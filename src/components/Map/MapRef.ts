@@ -3,6 +3,10 @@ import type {
   Bounds, ControlHandle, LayerHandle, MapHandle, OverlayHandle,
   Pixel, Point, Size,
 } from '../../types';
+import type {
+  DisplayOptions, MapPanes, MapStyleConfig, MapStyleV2Options,
+  Projection, ViewAnimation, Viewport,
+} from '../../types/core';
 
 /**
  * MapRef — 命令式句柄，全量透传 driver 方法。
@@ -58,10 +62,10 @@ export class MapRefImpl {
   checkResize(): void { this.driver.checkResize(this.map); }
   resize(): void { this.driver.resize(this.map); }
   setSize(size: { width: number; height: number }): void { this.driver.setSize(this.map, size); }
-  zoomTo(level: number, point?: unknown): void { this.driver.zoomTo(this.map, level, point); }
+  zoomTo(level: number, point?: Point): void { this.driver.zoomTo(this.map, level, point); }
 
   // ─── 显示配置 ───
-  setDisplayOptions(options: unknown): void { this.driver.setDisplayOptions(this.map, options); }
+  setDisplayOptions(options: DisplayOptions): void { this.driver.setDisplayOptions(this.map, options); }
   setOptions(options: unknown): void { this.driver.setOptions(this.map, options); }
 
   // ─── 容器信息 ───
@@ -88,12 +92,12 @@ export class MapRefImpl {
   getAreaStyleId(): string { return this.driver.getAreaStyleId(this.map); }
   getRenderType(): string { return this.driver.getRenderType(this.map); }
   isCanvasMap(): boolean { return this.driver.isCanvasMap(this.map); }
-  getProjection(): unknown { return this.driver.getProjection(this.map); }
+  getProjection(): Projection { return this.driver.getProjection(this.map) as Projection; }
 
   getSolarInfo(date: Date): unknown { return this.driver.getSolarInfo(this.map, date); }
   getTileId(point: Point, level: number): string { return this.driver.getTileId(this.map, point, level); }
   getPoiByUid(uid: string, callback: (poi: unknown) => void): void { this.driver.getPoiByUid(this.map, uid, callback); }
-  getPanes(): unknown { return this.driver.getPanes(this.map); }
+  getPanes(): MapPanes { return this.driver.getPanes(this.map) as MapPanes; }
   getInfoWindow(): OverlayHandle | null { return this.driver.getInfoWindow(this.map); }
 
   // ─── Spots / 标注 ───
@@ -122,7 +126,7 @@ export class MapRefImpl {
   setCenter(center: Point | string, options?: unknown): void { this.driver.setCenter(this.map, center, options); }
   getCenter(): Point { return this.driver.getCenter(this.map); }
   setViewport(view: Point[] | Bounds, viewportOptions?: unknown): void { this.driver.setViewport(this.map, view, viewportOptions); }
-  getViewport(view: Point[] | Bounds, viewportOptions?: unknown): unknown { return this.driver.getViewport(this.map, view, viewportOptions); }
+  getViewport(view: Point[] | Bounds, viewportOptions?: unknown): Viewport { return this.driver.getViewport(this.map, view, viewportOptions) as Viewport; }
   setZoom(zoom: number, options?: unknown): void { this.driver.setZoom(this.map, zoom, options); }
   getZoom(): number { return this.driver.getZoom(this.map); }
   zoomIn(zoomCenter?: Point): void { this.driver.zoomIn(this.map, zoomCenter); }
@@ -168,8 +172,8 @@ export class MapRefImpl {
   closeInfoWindow(): void { this.driver.closeInfoWindow(this.map); }
 
   // ─── 样式 / 主题 ───
-  setMapStyle(config: unknown): void { this.driver.setMapStyle(this.map, config); }
-  setMapStyleV2(options: unknown): void { this.driver.setMapStyleV2(this.map, options); }
+  setMapStyle(config: MapStyleConfig): void { this.driver.setMapStyle(this.map, config); }
+  setMapStyleV2(options: MapStyleV2Options): void { this.driver.setMapStyleV2(this.map, options); }
   setTheme(theme: string, customVars?: Record<string, string>): void { this.driver.setTheme(this.map, theme, customVars); }
   setCopyrightOffset(logo: unknown, cpy: unknown): void { this.driver.setCopyrightOffset(this.map, logo, cpy); }
   setDefaultCursor(cursor: string): void { this.driver.setDefaultCursor(this.map, cursor); }
@@ -179,10 +183,10 @@ export class MapRefImpl {
   setOverlayMoveCursor(cursor: string): void { this.driver.setOverlayMoveCursor(this.map, cursor); }
 
   // ─── 视角动画 ───
-  startViewAnimation(viewAnimation: unknown): number { return this.driver.startViewAnimation(this.map, viewAnimation); }
-  pauseViewAnimation(viewAnimation?: unknown): void { this.driver.pauseViewAnimation(this.map, viewAnimation); }
-  continueViewAnimation(viewAnimation?: unknown): void { this.driver.continueViewAnimation(this.map, viewAnimation); }
-  cancelViewAnimation(viewAnimation?: unknown): void { this.driver.cancelViewAnimation(this.map, viewAnimation); }
+  startViewAnimation(viewAnimation: ViewAnimation): number { return this.driver.startViewAnimation(this.map, viewAnimation); }
+  pauseViewAnimation(viewAnimation?: ViewAnimation): void { this.driver.pauseViewAnimation(this.map, viewAnimation); }
+  continueViewAnimation(viewAnimation?: ViewAnimation): void { this.driver.continueViewAnimation(this.map, viewAnimation); }
+  cancelViewAnimation(viewAnimation?: ViewAnimation): void { this.driver.cancelViewAnimation(this.map, viewAnimation); }
 
   // ─── 截图 ───
   getScreenshot(): string { return this.driver.getScreenshot(this.map); }

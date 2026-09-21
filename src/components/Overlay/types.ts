@@ -712,7 +712,7 @@ export interface IconProps extends IconOptions, OverlayReactProps { url: string;
  */
 export interface IconSequenceProps extends OverlayReactProps {
   /** 符号样式（Symbol Handle 或 SDK Symbol 实例） */
-  symbol?: unknown;
+  symbol?: SymbolIcon | OverlayHandle;
   /** 符号相对于线起点的位置，百分比（如 '50%'）或像素值 */
   offset?: string;
   /** 符号在线上重复显示的间距，百分比或像素值；与 offset 同时设置时以 repeat 为准 */

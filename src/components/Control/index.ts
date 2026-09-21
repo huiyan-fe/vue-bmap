@@ -2,7 +2,7 @@
  * 全部 Control 组件 — 使用 createControlComponent 工厂批量生成。
  */
 import { createControlComponent } from '../../utils/createComponent';
-import type { Bounds, Size } from '../../types';
+import type { Bounds, Size, OverlayHandle } from '../../types';
 import type {
   ControlAnchor,
   LengthUnit,
@@ -73,7 +73,7 @@ export interface GeolocationControlOptions {
   offset?: Size;
   showAddressBar?: boolean;
   enableAutoLocation?: boolean;
-  locationIcon?: PlainIcon | unknown;
+  locationIcon?: PlainIcon | OverlayHandle;
   watchPosition?: boolean;
   useCompass?: boolean;
   autoZoom?: boolean;
