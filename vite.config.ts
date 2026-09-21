@@ -38,7 +38,7 @@ export default defineConfig({
         globals: { vue: 'Vue' },
       },
     },
-    sourcemap: true,
+    sourcemap: false,
     emptyOutDir: true,
   },
 });
