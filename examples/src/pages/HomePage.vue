@@ -47,7 +47,7 @@ import { BMapProvider, Map, Marker } from '@baidumap/vue-bmap';
       <div class="home-code-label">安装</div>
       <CodeBlock code="npm install @baidumap/vue-bmap" language="bash" />
       <p v-if="!hasAk" class="home-note" style="color:#f5222d">
-        未检测到 VITE_BMAP_AK：请复制 examples/.env.example 为 examples/.env 并填入你的百度地图 ak。
+        未检测到 VITE_BMAP_AK：请在仓库根目录复制 .env.example 为 .env 并填入你的百度地图 ak。
       </p>
       <div class="home-code-label" style="margin-top:16px">Hello World</div>
       <CodeBlock :code="HELLO" language="markup" />

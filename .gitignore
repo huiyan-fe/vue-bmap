@@ -2,12 +2,10 @@ node_modules
 dist
 docs
 
-# 本地环境变量（含百度地图 ak，切勿入库）
+# 本地环境变量（含百度地图 ak，切勿入库）。ak 统一放仓库根目录 .env，examples/test 共用
 .env
 .env.local
 .env.*.local
-examples/.env
-examples/.env.local
 
 # 日志与杂项
 *.log
