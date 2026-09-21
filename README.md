@@ -211,6 +211,45 @@ const caps = useCapabilities();
 
 > 部分组件只在 4.0（WebGL）下可用（如 `Prism`、`Marker3D`、`DistrictLayer`）。在不支持的版本使用时，默认会打印一条警告并跳过，不会让页面崩溃。
 
+## 命名约定与冲突处理
+
+组件默认以 **PascalCase** 使用（`<Marker />`、`<LogoControl />`），这是 Vue 3 单文件组件的推荐写法，也和 import 名一一对应。库里同时兼容 kebab-case，但有两点需要留意：
+
+### kebab-case 与原生标签冲突
+
+在单文件组件（SFC）里 `<Marker />` 与 `<marker />` 编译等价。但部分组件是单词名，且与真实的 **SVG/HTML 元素同名**：`Marker`、`Circle`、`Polygon`、`Polyline`、`Label`、`Symbol`、`Rectangle`。
+
+- 用 PascalCase（`<Marker />`）：编译器按 import 名解析，无歧义，**推荐**。
+- 用 kebab-case（`<marker />`）或写在 in-DOM 模板里：会和原生 `<marker>`/`<circle>` 等标签混淆，请通过 import 别名加前缀规避：
+
+```vue
+<script setup>
+import { Marker as BmapMarker, Circle as BmapCircle } from '@baidumap/vue-bmap';
+</script>
+
+<template>
+  <bmap-marker :position="center" />
+  <bmap-circle :center="center" :radius="800" />
+</template>
+```
+
+> 注意大小写映射：别名取 `BmapMarker`（把 Bmap 当一个词）才对应 `<bmap-marker>`；若取 `BMapMarker`，Vue 生成的 kebab 标签是 `<b-map-marker>`。
+
+### `Map` / `Symbol` 会遮蔽同名全局对象
+
+组件 `Map`、`Symbol` 与 JS 全局的 `Map`、`Symbol` 同名。如果在同一个 `<script setup>` 里既 import 了组件又要用原生 `new Map()` / `Symbol()`，请给组件起别名避免遮蔽：
+
+```vue
+<script setup>
+import { Map as BMapMap } from '@baidumap/vue-bmap';
+const cache = new Map(); // 原生 Map 不受影响
+</script>
+
+<template>
+  <BMapMap :center="center" :zoom="12" style="height: 500px" />
+</template>
+```
+
 ## 常见问题
 
 **地图不显示？** 检查 `Map` 的容器是否有明确的宽高，`ak` 是否有效、是否配置了域名白名单。
