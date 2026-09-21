@@ -26,6 +26,7 @@
     "build": "vite build",
     "dev": "vite build --watch",
     "examples": "vite --config examples/vite.config.ts",
+    "build:examples": "vite build --config examples/vite.config.ts",
     "test:manual": "vite --config test/vite.config.ts",
     "test": "vitest run",
     "test:watch": "vitest",

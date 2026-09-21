@@ -12,5 +12,10 @@ export default defineConfig({
       '@baidumap/vue-bmap': resolve(__dirname, '../src/index.ts'),
     },
   },
+  build: {
+    // 构建产物输出到仓库根目录的 docs/（在 examples 根之外，需 emptyOutDir 允许清理）
+    outDir: resolve(__dirname, '../docs'),
+    emptyOutDir: true,
+  },
   server: { host: true, port: 5273 },
 });
