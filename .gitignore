@@ -1,0 +1,16 @@
+node_modules
+dist
+docs
+
+# 本地环境变量（含百度地图 ak，切勿入库）
+.env
+.env.local
+.env.*.local
+examples/.env
+examples/.env.local
+
+# 日志与杂项
+*.log
+.DS_Store
+.idea
+.vscode

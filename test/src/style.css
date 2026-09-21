@@ -1,0 +1,80 @@
+* { box-sizing: border-box; }
+html, body, #app { height: 100%; margin: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; color: #222; }
+
+.app-layout { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+.app-header {
+  height: 48px; flex-shrink: 0; display: flex; align-items: center; gap: 12px;
+  padding: 0 16px; background: #1f2937; color: #fff;
+}
+.app-header .brand { font-size: 15px; font-weight: 600; }
+.app-header .spacer { flex: 1; }
+.app-header select { padding: 3px 8px; border-radius: 4px; border: 1px solid #4b5563; background: #111827; color: #fff; }
+.app-header .badge { font-size: 12px; color: #9ca3af; }
+
+.app-body { flex: 1; display: flex; min-height: 0; }
+.app-sidebar { width: 200px; flex-shrink: 0; overflow-y: auto; border-right: 1px solid #e5e7eb; background: #f9fafb; padding: 8px 0; }
+.app-sidebar .cat { padding: 8px 14px 4px; font-size: 11px; color: #9ca3af; text-transform: uppercase; }
+.app-sidebar a { display: block; padding: 6px 14px 6px 20px; font-size: 13px; color: #374151; text-decoration: none; }
+.app-sidebar a:hover { background: #eef2ff; }
+.app-sidebar a.active { color: #2563eb; background: #e0e7ff; font-weight: 600; }
+.app-sidebar a .wip { float: right; font-size: 10px; color: #9ca3af; }
+
+.app-main { flex: 1; min-width: 0; position: relative; overflow: hidden; }
+
+/* 单地图页：地图铺满 app-main，浮层面板绝对定位其上 */
+.test-map { position: relative; width: 100%; height: 100%; min-width: 0; flex: 1; }
+.test-panel {
+  position: absolute; top: 12px; left: 12px; z-index: 20; max-width: 360px;
+  background: rgba(255,255,255,0.96); border: 1px solid #e5e7eb; border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12); padding: 12px; font-size: 13px;
+}
+.test-panel h3 { margin: 0 0 8px; font-size: 14px; }
+.test-panel button { margin: 2px 4px 2px 0; padding: 4px 10px; border: 1px solid #2563eb; background: #2563eb; color: #fff; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.test-panel button.ghost { background: #fff; color: #2563eb; }
+.test-panel input { padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; }
+.test-result { margin-top: 8px; max-height: 260px; overflow: auto; background: #0b1021; color: #a5d6ff; border-radius: 6px; padding: 8px; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
+.placeholder { padding: 40px; color: #9ca3af; }
+.hud { position: absolute; right: 12px; top: 12px; z-index: 20; background: rgba(17,24,39,0.85); color: #e5e7eb; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-family: monospace; }
+
+/* ─── 两栏测试页（对齐 react-bmap test：左地图 + 右控制面板） ─── */
+.test-page { display: flex; height: 100%; }
+.test-controls {
+  width: 440px; flex-shrink: 0; padding: 20px 20px 60px; overflow-y: auto;
+  background: #fff; border-left: 1px solid #e8e8e8;
+}
+.test-controls h2 { font-size: 18px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
+.test-controls section { margin-bottom: 20px; }
+.test-controls h3 { font-size: 14px; color: #666; margin-bottom: 8px; }
+.test-controls input[type="text"], .test-controls input[type="number"] {
+  flex: 1; padding: 6px 10px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; outline: none;
+}
+.test-controls input[type="range"] { width: 100%; cursor: pointer; }
+.test-controls button {
+  padding: 6px 16px; border: 1px solid #1890ff; border-radius: 4px; background: #1890ff;
+  color: #fff; font-size: 14px; cursor: pointer;
+}
+.test-controls button:hover { background: #40a9ff; border-color: #40a9ff; }
+.input-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+.input-row label { font-size: 13px; color: #666; }
+.full-width { width: 100%; margin-bottom: 8px; }
+.checkbox-row { display: flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
+.btn-group { display: flex; flex-wrap: wrap; gap: 6px; }
+.btn-group button { padding: 4px 10px; font-size: 13px; }
+.btn-group button.active { background: #096dd9; border-color: #096dd9; }
+.muted { color: #999; }
+.small { font-size: 12px; line-height: 1.5; }
+.cap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
+.cap-cell { padding: 6px 8px; border-radius: 3px; font-size: 12px; font-family: monospace; text-align: center; }
+.cap-cell.ok { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
+.cap-cell.no { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
+.cap-tag { display: inline-block; margin-left: 8px; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-family: monospace; vertical-align: middle; }
+.cap-tag.ok { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
+.cap-tag.no { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
+.event-log-float {
+  position: absolute; left: 8px; bottom: 16px; max-width: 340px; max-height: 220px;
+  background: rgba(0,0,0,0.75); color: #0f0; border-radius: 6px; padding: 8px;
+  font-size: 11px; font-family: monospace; overflow-y: auto; z-index: 10; border: 1px solid rgba(255,255,255,0.15);
+}
+.event-log-float .log-head { display: flex; justify-content: space-between; margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 4px; }
+.event-log-float .log-head button { background: transparent; border: 1px solid #555; color: #aaa; cursor: pointer; font-size: 10px; border-radius: 3px; padding: 0 6px; }
