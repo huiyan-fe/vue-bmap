@@ -7,7 +7,7 @@ import { debugWarn } from '../utils/debugWarn';
  */
 export class UnsupportedCapabilityError extends Error {
   constructor(public capability: Capability, public version: BMapVersion) {
-    super(`[react-bmap] ${capability} is not supported in JSAPI ${version}`);
+    super(`[vue-bmap] ${capability} is not supported in JSAPI ${version}`);
     this.name = 'UnsupportedCapabilityError';
   }
 }
@@ -33,7 +33,7 @@ export function reportUnsupported(
     throw new UnsupportedCapabilityError(capability, version);
   }
   if (behavior === 'warn' && typeof console !== 'undefined') {
-    console.warn(`[react-bmap] ${capability} not supported in JSAPI ${version} (noop)`);
+    console.warn(`[vue-bmap] ${capability} not supported in JSAPI ${version} (noop)`);
   }
   // 'ignore' 或 'warn' 走到这里返回 undefined
 }

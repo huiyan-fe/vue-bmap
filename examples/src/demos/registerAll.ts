@@ -3,4 +3,5 @@ import './overlayDemos';
 import './controlDemos';
 import './layerDemos';
 import './serviceDemos';
+import './otherDemos';
 import './hookDemos';

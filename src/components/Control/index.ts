@@ -225,3 +225,9 @@ export const LogoControl = createControlComponent<LogoControlProps>({
   factory: (d, p) => d.createLogoControl(p),
   optionProps: ['anchor', 'offset'],
 });
+
+// ─── 逃生舱 / 自定义控件（对齐 react-bmap） ───
+export { RawControl } from './RawControl';
+export type { RawControlProps } from './RawControl';
+export { CustomControl } from './CustomControl';
+export type { CustomControlProps } from './CustomControl';

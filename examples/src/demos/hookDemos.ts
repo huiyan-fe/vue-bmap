@@ -1,7 +1,7 @@
 import { defineComponent, h, ref } from 'vue';
 import {
   Marker, useMap, useMapEvent, useMapReady, useDriver, useMapRef,
-  useCapabilities, useSymbol, useIcon, useBMapContext,
+  useCapabilities, useSymbol, useIcon, useBMapContext, useMapStatus,
   BMap_Symbol_SHAPE_STAR,
 } from '@baidumap/vue-bmap';
 import { MapContainer } from '../components/MapContainer';
@@ -225,6 +225,45 @@ const icon = useIcon({ url: '/marker_demo_1.png', size: { width: 48, height: 48 
 <template>
   <Map :center="center" :zoom="11">
     <Marker v-if="icon" :position="center" :icon="icon" />
+  </Map>
+</template>`,
+});
+
+// ─── useMapStatus（v1.0.2 新增）：订阅地图状态快照 ───
+const StatusPanel = defineComponent({
+  name: 'StatusPanel',
+  setup() {
+    const status = useMapStatus();
+    return () => {
+      const s = status.value;
+      if (!s) return h('div', { style: panel }, '地图未就绪');
+      const { center, zoom, bounds, size, heading, tilt } = s;
+      return h('div', { style: panel }, [
+        h('div', `center：${center ? `${center.lng.toFixed(5)}, ${center.lat.toFixed(5)}` : '—'}`),
+        h('div', `zoom：${zoom ?? '—'}`),
+        h('div', `size：${size ? `${size.width} × ${size.height}` : '—'}`),
+        h('div', `heading / tilt：${heading ?? '—'} / ${tilt ?? '—'}`),
+        h('div', { style: { marginTop: '4px', color: '#888' } }, `bounds：${bounds ? `${bounds.sw.lng.toFixed(3)},${bounds.sw.lat.toFixed(3)} ~ ${bounds.ne.lng.toFixed(3)},${bounds.ne.lat.toFixed(3)}` : '—'}`),
+      ]);
+    };
+  },
+});
+registerDemo('use-map-status', {
+  title: '订阅地图状态',
+  component: defineComponent({ setup: () => () => h(MapContainer, { center: C, zoom: 11 }, { default: () => [h(StatusPanel)] }) }),
+  code: `<script setup>
+import { Map, useMapStatus } from '@baidumap/vue-bmap';
+// useMapStatus（v1.0.2 新增）：返回响应式快照 ShallowRef<MapSnapshot | null>；
+// 拖动/缩放/resize 时自动更新，值没变就不会写入 ref（不触发多余渲染）。
+// 单项能力不支持时该字段降级为 null（比如 3.0 没有 tilt）。
+const status = useMapStatus();
+<\/script>
+<template>
+  <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="11">
+    <div v-if="status">
+      {{ status.center?.lng }}, {{ status.center?.lat }} @ zoom {{ status.zoom }}
+      / heading {{ status.heading ?? '—' }} / tilt {{ status.tilt ?? '—' }}
+    </div>
   </Map>
 </template>`,
 });

@@ -193,7 +193,7 @@ function toRawIcon(SDK: BMapSDK, icon: any): any {
   }
   if (!icon.url) return icon;                      // 无法转换，透传
   if (!icon.size) {
-    console.warn('[react-bmap] PlainIcon.size is required');
+    console.warn('[vue-bmap] PlainIcon.size is required');
     return icon;
   }
   const sz = new SDK.Size(icon.size.width, icon.size.height);
@@ -359,7 +359,7 @@ function warnUnhandledOverlayOptions(type: string, o: Record<string, unknown>): 
     if (warnedOverlayOptionKeys.has(seen)) continue;
     warnedOverlayOptionKeys.add(seen);
     console.warn(
-      `[react-bmap] ${type} 的 "${k}" 声明在 optionProps 里，`
+      `[vue-bmap] ${type} 的 "${k}" 声明在 optionProps 里，`
       + '但 v4Driver.setOverlayOptions 没有对应的 SDK setter 分支，运行时修改该 prop 不会生效。'
       + '要么补上分支，要么把它移到 ctorOnlyProps（改动时重建覆盖物）。',
     );
@@ -927,7 +927,7 @@ export function createV4Driver(
       const pathLen = Array.isArray(p) ? p.length : 0;
       if (safeCp.length < Math.max(0, pathLen - 1)) {
         // eslint-disable-next-line no-console
-        console.warn(`[react-bmap] BezierCurve: controlPoints 需要 ${pathLen - 1} 组，实际 ${safeCp.length} 组，已自动补齐`);
+        console.warn(`[vue-bmap] BezierCurve: controlPoints 需要 ${pathLen - 1} 组，实际 ${safeCp.length} 组，已自动补齐`);
         while (safeCp.length < pathLen - 1) safeCp.push([{ lng: 0, lat: 0 }]);
       }
       const ctorOpts: Record<string, unknown> = {};
@@ -1379,7 +1379,7 @@ export function createV4Driver(
     createNormalLayer: (o) => createLayerFactory('NormalLayer', () => new rawSDK.NormalLayer(o), 'normal'),
     createGeoJSONLayer: (o) => {
       const opts = o as Record<string, unknown>;
-      const layerName = (opts?.layerName as string) || 'react-bmap-geojson';
+      const layerName = (opts?.layerName as string) || 'vue-bmap-geojson';
       return createLayerFactory('GeoJSONLayer', () => new rawSDK.GeoJSONLayer(layerName, opts), 'geojson');
     },
     createDistrictLayer: (o) => createLayerFactory('DistrictLayer', () => new rawSDK.DistrictLayer(o), 'district'),

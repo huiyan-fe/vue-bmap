@@ -29,10 +29,7 @@ const supported = computed(() => {
     <h1 style="margin-bottom: 8px">{{ meta.name }}</h1>
     <p style="color: #666; margin-bottom: 24px">{{ meta.description }}</p>
 
-    <div v-if="meta.todo" class="todo-note">
-      该组件已列入对齐清单，vue-bmap 当前版本（alpha）尚未实现，规划在后续阶段补齐。
-    </div>
-    <div v-else-if="!supported" class="unsupported-note">
+    <div v-if="!supported" class="unsupported-note">
       ⚠️ 此组件在当前地图版本下不可用，请切换到支持的版本。
     </div>
     <template v-else-if="demos.length">
@@ -56,10 +53,6 @@ const supported = computed(() => {
 </template>
 
 <style scoped>
-.todo-note {
-  padding: 16px; background: #fff7e6; border: 1px solid #ffd591; border-radius: 6px;
-  color: #fa8c16; font-size: 14px;
-}
 .unsupported-note {
   padding: 16px; background: #fff7e6; border: 1px solid #ffd591; border-radius: 6px;
   color: #fa8c16; font-size: 14px;

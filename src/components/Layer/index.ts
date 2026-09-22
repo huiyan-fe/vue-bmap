@@ -68,3 +68,25 @@ export const MVTLayer = createLayerComponent<MVTLayerProps>({
     { sdk: 'mousemove', prop: 'onmousemove' }, { sdk: 'mouseout', prop: 'onmouseout' },
   ],
 });
+
+// ─── 长尾图层（对齐 react-bmap） ───
+export { PixelLayer } from './PixelLayer';
+export type { PixelLayerOptions, PixelLayerProps } from './PixelLayer';
+export { BaiduLayer } from './BaiduLayer';
+export type { BaiduLayerOptions, BaiduLayerProps } from './BaiduLayer';
+export { PanoramaCoverageLayer } from './PanoramaCoverageLayer';
+export type { PanoramaCoverageLayerProps } from './PanoramaCoverageLayer';
+export { FeatureLayer } from './FeatureLayer';
+export type { FeatureLayerOptions, FeatureLayerProps } from './FeatureLayer';
+export { DOMLayer } from './DOMLayer';
+export type { DOMLayerOptions, DOMLayerProps } from './DOMLayer';
+export { PointShapeLayer } from './PointShapeLayer';
+export type { PointShapeStyle, PointShapeLayerOptions, PointShapeLayerProps } from './PointShapeLayer';
+export { PointIconLayer } from './PointIconLayer';
+export type { PointIconLayerEvent, PointIconStyle, PointIconLayerOptions, PointIconLayerProps } from './PointIconLayer';
+export { FillLayer } from './FillLayer';
+export type { FillStyleExpr, FillLayerStyle, FillLayerOptions, FillLayerEvent, FillLayerProps } from './FillLayer';
+export { LineLayer } from './LineLayer';
+export type { LineStyleExpr, LineLayerStyle, LineLayerOptions, LineLayerEvent, LineLayerProps } from './LineLayer';
+export { ThreeLayer } from './ThreeLayer';
+export type { ThreeObject, ThreeLayerInstance, ThreeLayerHook, ThreeLayerRef, ThreeLayerOptions, ThreeLayerProps } from './ThreeLayer';

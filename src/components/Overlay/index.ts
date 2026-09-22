@@ -197,3 +197,16 @@ export const Marker3D = createOverlayComponent<Marker3DProps>({
 
 // ─── 信息窗口（独立 Vue 组件） ───
 export { InfoWindow } from './InfoWindow';
+
+// ─── 长尾覆盖物 / 逃生舱（对齐 react-bmap） ───
+export { RawOverlay } from './RawOverlay';
+export type { RawOverlayProps } from './RawOverlay';
+export { CustomOverlay } from './CustomOverlay';
+export { MapMask } from './MapMask';
+export type { MapMaskOptions, MapMaskProps } from './MapMask';
+export { SimpleInfoWindow } from './SimpleInfoWindow';
+export type { SimpleInfoWindowOptions, SimpleInfoWindowProps } from './SimpleInfoWindow';
+export { PlaceDetail } from './PlaceDetail';
+export type { PlaceDetailRenderOptions, PlaceDetailOptions, PlaceDetailProps } from './PlaceDetail';
+export { PlaceDetailPanel } from './PlaceDetailPanel';
+export type { PlaceDetailPanelProps } from './PlaceDetailPanel';

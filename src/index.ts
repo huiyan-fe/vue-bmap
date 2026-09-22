@@ -25,6 +25,7 @@ export {
   Marker, Label, Polyline, Polygon, Circle, Rectangle, BezierCurve, Prism,
   GroundOverlay, GroundPoint, PointCollection, Symbol, Icon, IconSequence, Hotspot,
   Marker3D, InfoWindow,
+  RawOverlay, CustomOverlay, MapMask, SimpleInfoWindow, PlaceDetail, PlaceDetailPanel,
 } from './components/Overlay';
 export type {
   MarkerProps, LabelProps, PolylineProps, PolygonProps, CircleProps, RectangleProps,
@@ -32,6 +33,9 @@ export type {
   SymbolProps, IconProps, IconSequenceProps, HotspotProps, Marker3DProps, InfoWindowProps,
   MarkerOptions, LabelOptions, PolylineOptions, PolygonOptions, CircleOptions, RectangleOptions,
   InfoWindowOptions, PlainIcon, SymbolIcon,
+  RawOverlayProps, CustomOverlayProps, MapMaskProps, MapMaskOptions,
+  SimpleInfoWindowProps, SimpleInfoWindowOptions,
+  PlaceDetailProps, PlaceDetailRenderOptions, PlaceDetailPanelProps,
 } from './components/Overlay';
 
 // ─── Control 组件 ───
@@ -39,29 +43,63 @@ export {
   NavigationControl, NavigationControl3D, ScaleControl, OverviewMapControl,
   MapTypeControl, CopyrightControl, GeolocationControl, PanoramaControl,
   ZoomControl, CityListControl, LocationControl, LogoControl,
+  RawControl, CustomControl,
 } from './components/Control';
 export type {
   NavigationControlProps, ScaleControlProps, MapTypeControlProps,
   GeolocationControlProps, ZoomControlProps, OverviewMapControlProps,
   CopyrightControlProps, CityListControlProps, LogoControlProps,
+  RawControlProps, CustomControlProps,
 } from './components/Control';
 
 // ─── Layer 组件 ───
 export {
   TileLayer, NormalLayer, GeoJSONLayer, DistrictLayer, CustomLayer, CanvasLayer, TrafficLayer,
   RasterTileLayer, WMSLayer, WMTSLayer, XYZLayer, MVTLayer,
+  PixelLayer, BaiduLayer, PanoramaCoverageLayer, FeatureLayer, DOMLayer,
+  PointShapeLayer, PointIconLayer, FillLayer, LineLayer, ThreeLayer,
 } from './components/Layer';
 export type {
   TileLayerProps, NormalLayerProps, GeoJSONLayerProps, DistrictLayerProps,
   CustomLayerProps, CanvasLayerProps, TrafficLayerProps,
+  PixelLayerOptions, PixelLayerProps, BaiduLayerOptions, BaiduLayerProps,
+  PanoramaCoverageLayerProps, FeatureLayerOptions, FeatureLayerProps,
+  DOMLayerOptions, DOMLayerProps, PointShapeStyle, PointShapeLayerOptions, PointShapeLayerProps,
+  PointIconLayerEvent, PointIconStyle, PointIconLayerOptions, PointIconLayerProps,
+  FillStyleExpr, FillLayerStyle, FillLayerOptions, FillLayerEvent, FillLayerProps,
+  LineStyleExpr, LineLayerStyle, LineLayerOptions, LineLayerEvent, LineLayerProps,
+  ThreeObject, ThreeLayerInstance, ThreeLayerHook, ThreeLayerRef, ThreeLayerOptions, ThreeLayerProps,
 } from './components/Layer';
+
+// ─── 右键菜单 / 全景 ───
+export { ContextMenu, MenuItem } from './components/Menu';
+export type { ContextMenuProps, MenuItemProps } from './components/Menu';
+export { Panorama, PanoramaLabel } from './components/Panorama';
+export type { PanoramaProps, PanoramaLabelProps, PanoramaRef, PanoramaPov, PanoramaOptions } from './components/Panorama';
 
 // ─── Composables ───
 export {
   useMap, useMapEvent, useMapReady, useDriver, useMapRef, useCapabilities,
   useSymbol, useIcon, useGeocoder, useServiceTimeout,
+  useDrivingRoute, useWalkingRoute, useRidingRoute, useTransitRoute, useTruckRoute,
+  useLocalSearch, useAutocomplete, useBusLineSearch, usePlaceDetail,
+  useBoundary, useLocalCity, useConvertor, useGeolocation, usePanoramaService,
+  useMapStatus, useRawControl, useRawOverlay,
 } from './composables';
-export type { GeocoderHookResult } from './composables';
+export type {
+  GeocoderHookResult, MapSnapshot,
+  DrivingRouteOptions, DrivingRouteHookResult, DrivingRouteRenderOptions,
+  WalkingRouteOptions, WalkingRouteHookResult,
+  RidingRouteOptions, RidingRouteHookResult,
+  TransitRouteOptions, TransitRouteHookResult,
+  TruckRouteOptions, TruckRouteHookResult,
+  LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions,
+  AutocompleteOptions, AutocompleteHookResult,
+  BusLineSearchOptions, BusLineSearchHookResult,
+  PlaceDetailOptions, PlaceDetailHookResult,
+  BoundaryHookResult, LocalCityHookResult, ConvertorHookResult,
+  GeolocationHookResult, PanoramaServiceHookResult,
+} from './composables';
 
 // ─── 组件工厂（高级用法：自定义组件） ───
 export { createOverlayComponent, createControlComponent, createLayerComponent } from './utils/createComponent';

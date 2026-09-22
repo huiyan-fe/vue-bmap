@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { COMPONENTS, CATEGORIES } from '../config/components';
+import { CHANGELOG } from '../config/changelog';
 import { EXAMPLE_AK } from '../mapMode';
 import CodeBlock from '../components/CodeBlock.vue';
 
@@ -70,6 +71,21 @@ import { BMapProvider, Map, Marker } from '@baidumap/vue-bmap';
               <span class="home-component-desc">{{ c.description }}</span>
             </a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section">
+      <h2 class="home-section-title">更新日志</h2>
+      <div class="home-changelog">
+        <div v-for="entry in CHANGELOG" :key="entry.version" class="home-changelog-entry" style="margin-bottom:20px">
+          <h3 class="home-category-title" style="display:flex;align-items:baseline;gap:8px">
+            <span>{{ entry.version }}</span>
+            <span v-if="entry.date" style="font-size:12px;font-weight:400;color:#888">{{ entry.date }}</span>
+          </h3>
+          <ul style="margin:6px 0 0;padding-left:20px;line-height:1.9;font-size:13px;color:#444">
+            <li v-for="(c, i) in entry.changes" :key="i">{{ c }}</li>
+          </ul>
         </div>
       </div>
     </section>

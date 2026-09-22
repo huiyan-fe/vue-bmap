@@ -349,7 +349,13 @@ export function createLayerComponent<P extends Record<string, any>>(config: Laye
         const out: Record<string, unknown> = {};
         for (const [k, v] of Object.entries(attrs)) {
           if (k.startsWith('on')) continue; // 事件监听交由 events 处理
-          if (v !== undefined && v !== null) out[k] = v;
+          if (v === undefined || v === null) continue;
+          // 图层工厂无声明式 props，靠 $attrs 收集；模板里写 kebab（:data-source）时 $attrs 的键
+          // 仍是 kebab（Vue 不会对未声明 props 的 attr 做 camel 化），而 SDK 构造参数是 camelCase
+          // （dataSource / tileUrlTemplate / strokeColor…）。这里统一 camel 化，避免 kebab 键被 SDK 忽略
+          // 导致图层拿不到配置（如 GeoJSONLayer 的 dataSource 丢失→无内容）。
+          const key = k.includes('-') ? k.replace(/-([a-z])/g, (_m, c: string) => c.toUpperCase()) : k;
+          out[key] = v;
         }
         return out;
       };

@@ -64,8 +64,8 @@ onUnmounted(() => document.removeEventListener('mousedown', onDocClick));
                 v-for="c in COMPONENTS.filter((x) => x.category === cat)"
                 :key="c.id"
                 :href="`#/component/${c.id}`"
-                :class="['app-sidebar-link', { active: currentId === c.id, todo: c.todo }]"
-              >{{ c.name }}<span v-if="c.todo" class="todo-tag">规划中</span></a>
+                :class="['app-sidebar-link', { active: currentId === c.id }]"
+              >{{ c.name }}</a>
             </template>
           </nav>
 
