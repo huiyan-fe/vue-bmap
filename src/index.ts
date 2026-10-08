@@ -18,7 +18,7 @@ export type { BMapContextValue, MapContextValue, OverlayTargetStore, OverlayTarg
 
 // ─── Map 容器 ───
 export { Map, MapRefImpl } from './components/Map';
-export type { MapProps, MapRef } from './components/Map';
+export type { MapProps, MapRef, MapCustomArea } from './components/Map';
 
 // ─── Overlay 组件 ───
 export {

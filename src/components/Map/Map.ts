@@ -14,6 +14,16 @@ import type { DisplayOptions } from '../../types/core';
 import { MapRefImpl } from './MapRef';
 import { pointEquals } from '../../utils/pointEquals';
 
+/** 个性化生效区域配置（setCustomArea，4.0+，3.0 不支持）。 */
+export interface MapCustomArea {
+  /** 生效区域边界点（普通经纬度 { lng, lat }，组件内部转成原生 Point） */
+  area: Point[];
+  /** 区域内个性化样式，形如 { styleJson: [...] } */
+  style: unknown;
+  /** 生效前的全局个性化调用参数，默认 { styleJson: [] }（setCustomArea 依赖全局个性化管线已初始化） */
+  globalStyle?: unknown;
+}
+
 const EVENT_MAP: Record<string, string> = {
   onClick: 'click', onDblClick: 'dblclick', onRightClick: 'rightclick',
   onMouseMove: 'mousemove', onMouseDown: 'mousedown', onMouseUp: 'mouseup',
@@ -49,6 +59,7 @@ export const Map = defineComponent({
     displayOptions: { type: Object as PropType<DisplayOptions>, default: undefined },
     mapStyle: { default: undefined },
     mapStyleV2: { default: undefined },
+    customArea: { type: [Object, Boolean] as PropType<MapCustomArea | false>, default: undefined },
     minZoom: { type: Number, default: undefined },
     maxZoom: { type: Number, default: undefined },
     bounds: { type: Object as PropType<Bounds>, default: undefined },
@@ -84,6 +95,13 @@ export const Map = defineComponent({
     let handle: MapHandle | null = null;
     let unsubs: Array<() => void> = [];
     let internalUpdate = false;
+    // 用户交互中（拖拽/滚轮缩放）标志：交互期间不让受控 watch 回灌，避免和手势打架
+    let interacting = false;
+    // 地图自身回传给外部的最近值：受控 prop 回灌到这个值时说明是「回声」，跳过以打断循环
+    let lastEmittedCenter: Point | null = null;
+    let lastEmittedZoom: number | null = null;
+    // 个性化生效区域：记录上一次下发的区域，供从对象切到 false 时重置为空样式
+    let lastCustomArea: Point[] | null = null;
 
     const suppress = (fn: () => void) => {
       internalUpdate = true;
@@ -129,6 +147,16 @@ export const Map = defineComponent({
       // 拖拽范围限制：建图时即应用（restrictBounds 一旦设置无官方 API 撤销）
       if (props.bounds !== undefined) { try { driver.restrictBounds(handle, props.bounds); } catch { /* ignore */ } }
 
+      // 个性化生效区域（customArea）：首帧同步应用（tilesloaded 暴露 map 之前），避免「先默认建筑样式、
+      // 再切区域个性化」的闪烁。setCustomArea 依赖全局个性化管线，先 setMapStyle 兜底一次再设区域。
+      if (props.customArea) {
+        try {
+          driver.setMapStyle(handle, props.customArea.globalStyle ?? { styleJson: [] });
+          driver.setCustomArea(handle, { area: props.customArea.area, style: props.customArea.style });
+          lastCustomArea = props.customArea.area;
+        } catch { /* v3 不支持 */ }
+      }
+
       let mapReady = false;
       const markReady = () => {
         if (mapReady || !handle) return;
@@ -140,13 +168,24 @@ export const Map = defineComponent({
       const fallbackId = setTimeout(markReady, 500);
       unsubs.push(() => clearTimeout(fallbackId));
 
+      // 交互开始/结束：标记 interacting，交互期间受控 watch 不回灌
+      unsubs.push(driver.addEventListener(handle, 'movestart', () => { interacting = true; }));
+      unsubs.push(driver.addEventListener(handle, 'dragstart', () => { interacting = true; }));
+      unsubs.push(driver.addEventListener(handle, 'zoomstart', () => { interacting = true; }));
+
       unsubs.push(driver.addEventListener(handle, 'moveend', () => {
+        interacting = false;
         if (internalUpdate || !handle) return;
-        props.onCenterChange?.(driver.getCenter(handle));
+        const c = driver.getCenter(handle);
+        lastEmittedCenter = c; // 记录回传值，供受控 watch 判回声
+        props.onCenterChange?.(c);
       }));
       unsubs.push(driver.addEventListener(handle, 'zoomend', () => {
+        interacting = false;
         if (internalUpdate || !handle) return;
-        props.onZoomChange?.(driver.getZoom(handle));
+        const z = driver.getZoom(handle);
+        lastEmittedZoom = z;
+        props.onZoomChange?.(z);
       }));
 
       // 用户事件回调（onClick 等）
@@ -176,16 +215,22 @@ export const Map = defineComponent({
 
     const driverOf = () => bmap.value.driver;
 
-    // 受控 center
-    watch(() => [props.center?.lng, props.center?.lat], () => {
+    // 受控 center：watch 源用「lng,lat 字符串键」而非数组/对象——父组件传内联 center={{lng,lat}}
+    // 时对象每次渲染都是新引用，若按引用触发会在每次无关重渲染（如缩放改了 zoom）时空跑一遍，
+    // 把被缩放移动过的中心又 setCenter 拽回去 → 「缩放时中心点也会动」。字符串键只在真正数值变化时触发。
+    watch(() => (props.center ? `${props.center.lng},${props.center.lat}` : ''), () => {
       const d = driverOf();
       if (!handle || !d || !props.center) return;
+      if (interacting) return;
+      if (pointEquals(lastEmittedCenter, props.center)) return;
       if (!pointEquals(d.getCenter(handle), props.center)) suppress(() => d.setCenter(handle!, props.center));
     });
-    // 受控 zoom
+    // 受控 zoom：同样跳过交互中与自身回传值
     watch(() => props.zoom, () => {
       const d = driverOf();
       if (!handle || !d || props.zoom == null) return;
+      if (interacting) return;
+      if (lastEmittedZoom !== null && lastEmittedZoom === props.zoom) return;
       let cur: number | undefined;
       try { cur = d.getZoom(handle); } catch { /* ignore */ }
       if (cur !== undefined && cur !== props.zoom) suppress(() => d.setZoom(handle!, props.zoom));
@@ -194,6 +239,7 @@ export const Map = defineComponent({
     watch(() => props.heading, () => {
       const d = driverOf();
       if (!handle || !d || props.heading == null) return;
+      if (interacting) return;
       let cur: number | undefined;
       try { cur = d.getHeading(handle); } catch { return; }
       if (typeof cur === 'number' && !Number.isNaN(cur) && Math.abs(cur - props.heading) > 0.01) suppress(() => d.setHeading(handle!, props.heading));
@@ -201,6 +247,7 @@ export const Map = defineComponent({
     watch(() => props.tilt, () => {
       const d = driverOf();
       if (!handle || !d || props.tilt == null) return;
+      if (interacting) return;
       let cur: number | undefined;
       try { cur = d.getTilt(handle); } catch { return; }
       if (typeof cur === 'number' && !Number.isNaN(cur) && Math.abs(cur - props.tilt) > 0.01) suppress(() => d.setTilt(handle!, props.tilt));
@@ -230,6 +277,29 @@ export const Map = defineComponent({
     watch(() => props.displayOptions, (v) => { const d = driverOf(); if (handle && d && v !== undefined) try { d.setDisplayOptions(handle, v); } catch { /* ignore */ } }, { deep: true });
     watch(() => props.mapStyle, (v) => { const d = driverOf(); if (handle && d && v !== undefined) d.setMapStyle(handle, v); });
     watch(() => props.mapStyleV2, (v) => { const d = driverOf(); if (handle && d && v !== undefined) d.setMapStyleV2(handle, v); });
+    // 个性化生效区域：初始在 createMap 应用，此处处理后续变化。
+    // 从对象切到 false 时 SDK 无官方清除 API，对上一次区域重新下发空样式（styleJson: []）恢复默认渲染。
+    watch(
+      () => {
+        const ca = props.customArea;
+        return ca ? JSON.stringify(ca) : ca === false ? 'false' : '';
+      },
+      () => {
+        const d = driverOf();
+        if (!handle || !d) return;
+        const ca = props.customArea;
+        if (ca) {
+          try {
+            d.setMapStyle(handle, ca.globalStyle ?? { styleJson: [] });
+            d.setCustomArea(handle, { area: ca.area, style: ca.style });
+            lastCustomArea = ca.area;
+          } catch { /* v3 不支持 */ }
+        } else if (ca === false && lastCustomArea) {
+          try { d.setCustomArea(handle, { area: lastCustomArea, style: { styleJson: [] } }); } catch { /* ignore */ }
+          lastCustomArea = null;
+        }
+      },
+    );
 
     expose({
       /** 命令式句柄：panTo/flyTo/setZoom/getBounds/pointToPixel/getScreenshot 等全量方法 */
