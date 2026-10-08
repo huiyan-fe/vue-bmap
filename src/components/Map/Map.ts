@@ -91,6 +91,12 @@ export const Map = defineComponent({
       requestAnimationFrame(() => { internalUpdate = false; });
     };
 
+    /** 应用单个交互开关：enableXxx(true) / disableXxx(false)，key 形如 "enableScrollWheelZoom"。 */
+    const applyToggle = (d: any, key: string, v: boolean) => {
+      const cap = key.slice(6); // 去掉 "enable"
+      try { d[`${v ? 'enable' : 'disable'}${cap}`](handle); } catch { /* ignore */ }
+    };
+
     const createMap = () => {
       const { driver, status } = bmap.value;
       if (status !== 'ready' || !driver || !containerRef.value || handle) return;
@@ -114,6 +120,14 @@ export const Map = defineComponent({
       if (initTilt != null) { try { driver.setTilt(handle, initTilt, { noAnimation: true }); } catch { /* ignore */ } }
       if (props.mapType !== undefined) { try { driver.setMapType(handle, props.mapType); } catch { /* ignore */ } }
       if (props.displayOptions !== undefined) { try { driver.setDisplayOptions(handle, props.displayOptions); } catch { /* ignore */ } }
+
+      // 交互开关初始值：建图时即应用（下方 watch 非 immediate，只负责后续变化）
+      for (const key of TOGGLES) {
+        if (props[key] !== undefined) applyToggle(driver, key, props[key]);
+      }
+
+      // 拖拽范围限制：建图时即应用（restrictBounds 一旦设置无官方 API 撤销）
+      if (props.bounds !== undefined) { try { driver.restrictBounds(handle, props.bounds); } catch { /* ignore */ } }
 
       let mapReady = false;
       const markReady = () => {
@@ -192,19 +206,23 @@ export const Map = defineComponent({
       if (typeof cur === 'number' && !Number.isNaN(cur) && Math.abs(cur - props.tilt) > 0.01) suppress(() => d.setTilt(handle!, props.tilt));
     });
 
-    // 交互开关
+    // 交互开关：初始值在 createMap 建图时应用；此处只处理建图后的后续变化
     for (const key of TOGGLES) {
       watch(() => props[key], (v) => {
         const d = driverOf();
         if (!handle || !d || v === undefined) return;
-        const cap = key.slice(6); // 去掉 "enable"
-        try { (d as any)[`${v ? 'enable' : 'disable'}${cap}`](handle); } catch { /* ignore */ }
+        applyToggle(d, key, v);
       });
     }
 
     // 缩放范围 / 边界 / 类型 / 光标 / 主题 / 显示 / 样式
     watch(() => props.minZoom, (v) => { const d = driverOf(); if (handle && d && v !== undefined) try { d.setMinZoom(handle, v); } catch { /* ignore */ } });
     watch(() => props.maxZoom, (v) => { const d = driverOf(); if (handle && d && v !== undefined) try { d.setMaxZoom(handle, v); } catch { /* ignore */ } });
+    // 拖拽范围限制：初始在 createMap 应用，此处处理后续变化
+    watch(() => [props.bounds?.sw.lng, props.bounds?.sw.lat, props.bounds?.ne.lng, props.bounds?.ne.lat], () => {
+      const d = driverOf();
+      if (handle && d && props.bounds !== undefined) try { d.restrictBounds(handle, props.bounds); } catch { /* ignore */ }
+    });
     watch(() => props.mapType, (v) => { const d = driverOf(); if (handle && d && v !== undefined) try { d.setMapType(handle, v); } catch { /* ignore */ } });
     watch(() => props.defaultCursor, (v) => { const d = driverOf(); if (handle && d && v !== undefined) try { d.setDefaultCursor(handle, v); } catch { /* ignore */ } });
     watch(() => props.draggingCursor, (v) => { const d = driverOf(); if (handle && d && v !== undefined) try { d.setDraggingCursor(handle, v); } catch { /* ignore */ } });
