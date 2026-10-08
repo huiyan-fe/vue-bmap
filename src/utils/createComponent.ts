@@ -59,7 +59,14 @@ function buildProps(
   extra: string[] = [],
 ): Record<string, unknown> {
   const props: Record<string, unknown> = {};
-  for (const k of [...keys, ...extra]) props[k] = { default: undefined };
+  for (const k of [...keys, ...extra]) {
+    // 布尔开关（enable*/disable*/show*/is*/has* 命名约定）声明成 Boolean 类型，
+    // 这样裸属性写法 `is-open` / `enable-dragging` 能被 Vue 规整为 true（否则是空串 ""）；
+    // 仍保留 default: undefined，确保未传时 collect() 不会把它下发给 SDK。
+    props[k] = /^(?:enable|disable|show|is|has)[A-Z]/.test(k)
+      ? { type: Boolean, default: undefined }
+      : { default: undefined };
+  }
   for (const e of events) props[e.prop] = { type: Function as PropType<(...a: unknown[]) => void>, default: undefined };
   return props;
 }
