@@ -1,6 +1,6 @@
 {
   "name": "@baidumap/vue-bmap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Vue 3 components for Baidu Map JSAPI",
   "type": "module",
   "main": "dist/index.cjs",
