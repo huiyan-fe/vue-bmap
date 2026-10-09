@@ -39,9 +39,14 @@ export interface DOMLayerOptions {
   data?: object | null;
 }
 
+/** 创建 DOM 元素的回调，接收 properties 和 point，返回 HTMLElement */
+export type CreateDOMFn = (properties: object, point: { lng: number; lat: number }) => HTMLElement;
+
 export interface DOMLayerProps extends DOMLayerOptions {
-  /** 创建 DOM 元素的回调，接收 properties 和 point，返回 HTMLElement */
-  createDOM: (properties: object, point: { lng: number; lat: number }) => HTMLElement;
+  /** 创建 DOM 元素的回调。模板里可写 `:createDOM`；也支持别名 createDom（`:create-dom`） */
+  createDOM?: CreateDOMFn;
+  /** createDOM 的别名，方便用全小驼峰的 kebab 写法 `:create-dom`（createDOM 需写成 `:create-d-o-m`） */
+  createDom?: CreateDOMFn;
   /** GeoJSON 数据源，变化时调用 raw.setData() */
   data?: object;
 }
@@ -49,7 +54,9 @@ export interface DOMLayerProps extends DOMLayerOptions {
 export const DOMLayer = defineComponent({
   name: 'DOMLayer',
   props: {
-    createDOM: { type: Function as PropType<DOMLayerProps['createDOM']>, required: true },
+    createDOM: { type: Function as PropType<CreateDOMFn>, default: undefined },
+    // createDOM 的别名：Vue 把 `:create-dom` 规整为 createDom（而 createDOM 需写成 `:create-d-o-m`）
+    createDom: { type: Function as PropType<CreateDOMFn>, default: undefined },
     minZoom: { type: Number, default: undefined },
     maxZoom: { type: Number, default: undefined },
     zIndex: { type: Number, default: undefined },
@@ -69,8 +76,13 @@ export const DOMLayer = defineComponent({
     let handle: LayerHandle | null = null;
     // 已喂给当前 raw 的 data 指纹，供 data watch 跳过 create 时已应用的同一份数据
     let appliedDataKey: string | null = null;
-    // 引用稳定的 createDOM wrapper：内部现读最新 props.createDOM
-    const stableCreateDOM = (properties: object, point: { lng: number; lat: number }) => props.createDOM(properties, point);
+    // createDOM 与别名 createDom 二选一；引用稳定的 wrapper 内部现读最新回调
+    const resolveCreateDOM = (): CreateDOMFn | undefined => props.createDOM ?? props.createDom;
+    const stableCreateDOM = (properties: object, point: { lng: number; lat: number }) => {
+      const fn = resolveCreateDOM();
+      if (!fn) throw new Error('[vue-bmap] <DOMLayer> 必须提供 createDOM（或别名 createDom）');
+      return fn(properties, point);
+    };
 
     // nextTick 默认 true
     const nextTick = computed(() => props.nextTick ?? true);

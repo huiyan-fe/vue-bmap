@@ -26,7 +26,6 @@ export interface DistrictLayerOptions {
 }
 export interface CustomLayerOptions { databoxId?: string; geotableId?: string; q?: string; tags?: string; filter?: string; pointDensity?: number; }
 export interface CanvasLayerOptions { zIndex?: number; paneName?: string; update?: Function; }
-export interface TrafficLayerOptions { predictDate?: unknown; }
 
 export type TileLayerProps = TileLayerOptions;
 export type NormalLayerProps = NormalLayerOptions;
@@ -34,7 +33,6 @@ export type GeoJSONLayerProps = GeoJSONLayerOptions;
 export type DistrictLayerProps = DistrictLayerOptions;
 export type CustomLayerProps = CustomLayerOptions;
 export type CanvasLayerProps = CanvasLayerOptions;
-export type TrafficLayerProps = TrafficLayerOptions;
 
 export const TileLayer = createLayerComponent<TileLayerProps>({ displayName: 'TileLayer', factory: (d, p) => d.createTileLayer(p) });
 export const NormalLayer = createLayerComponent<NormalLayerProps>({ displayName: 'NormalLayer', factory: (d, p) => d.createNormalLayer(p) });
@@ -42,7 +40,9 @@ export const GeoJSONLayer = createLayerComponent<GeoJSONLayerProps>({ displayNam
 export const DistrictLayer = createLayerComponent<DistrictLayerProps>({ displayName: 'DistrictLayer', factory: (d, p) => d.createDistrictLayer(p) });
 export const CustomLayer = createLayerComponent<CustomLayerProps>({ displayName: 'CustomLayer', factory: (d, p) => d.createCustomLayer(p) });
 export const CanvasLayer = createLayerComponent<CanvasLayerProps>({ displayName: 'CanvasLayer', factory: (d, p) => d.createCanvasLayer(p) });
-export const TrafficLayer = createLayerComponent<TrafficLayerProps>({ displayName: 'TrafficLayer', factory: (d, p) => d.createTrafficLayer(p) });
+// TrafficLayer 为手写组件（colors/edge 需走 setColors/setEdge，构造函数不接受）
+export { TrafficLayer } from './TrafficLayer';
+export type { TrafficLayerOptions, TrafficLayerProps } from './TrafficLayer';
 
 // ─── 高级瓦片图层（4.0+） ───
 export interface RasterTileLayerOptions { url: string | ((x: number, y: number, z: number) => string); [k: string]: unknown; }
