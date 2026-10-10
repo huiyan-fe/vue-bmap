@@ -85,6 +85,8 @@ export const Map = defineComponent({
     onReady: { type: Function as PropType<(map: MapHandle) => void>, default: undefined },
     onCenterChange: { type: Function as PropType<(p: Point) => void>, default: undefined },
     onZoomChange: { type: Function as PropType<(z: number) => void>, default: undefined },
+    onHeadingChange: { type: Function as PropType<(heading: number) => void>, default: undefined },
+    onTiltChange: { type: Function as PropType<(tilt: number) => void>, default: undefined },
   },
   setup(props: any, { slots, attrs, expose }) {
     const bmap = useBMapContext();
@@ -100,6 +102,8 @@ export const Map = defineComponent({
     // 地图自身回传给外部的最近值：受控 prop 回灌到这个值时说明是「回声」，跳过以打断循环
     let lastEmittedCenter: Point | null = null;
     let lastEmittedZoom: number | null = null;
+    let lastEmittedHeading: number | null = null;
+    let lastEmittedTilt: number | null = null;
     // 个性化生效区域：记录上一次下发的区域，供从对象切到 false 时重置为空样式
     let lastCustomArea: Point[] | null = null;
 
@@ -138,6 +142,13 @@ export const Map = defineComponent({
       if (initTilt != null) { try { driver.setTilt(handle, initTilt, { noAnimation: true }); } catch { /* ignore */ } }
       if (props.mapType !== undefined) { try { driver.setMapType(handle, props.mapType); } catch { /* ignore */ } }
       if (props.displayOptions !== undefined) { try { driver.setDisplayOptions(handle, props.displayOptions); } catch { /* ignore */ } }
+      // 首选语言（4.0+）：string 启用并指定语言，false 关闭
+      if (props.enablePreferredLanguage !== undefined) {
+        try {
+          if (props.enablePreferredLanguage === false) driver.disablePreferredLanguage(handle);
+          else driver.enablePreferredLanguage(handle, props.enablePreferredLanguage as string);
+        } catch { /* v3 不支持 */ }
+      }
 
       // 交互开关初始值：建图时即应用（下方 watch 非 immediate，只负责后续变化）
       for (const key of TOGGLES) {
@@ -186,6 +197,21 @@ export const Map = defineComponent({
         const z = driver.getZoom(handle);
         lastEmittedZoom = z;
         props.onZoomChange?.(z);
+      }));
+      // 朝向 / 倾斜变化（4.0+；v3 driver 无此事件，addEventListener 内部安全降级）
+      unsubs.push(driver.addEventListener(handle, 'headingchange', () => {
+        if (internalUpdate || !handle) return;
+        try {
+          const h = driver.getHeading(handle);
+          if (typeof h === 'number' && !Number.isNaN(h)) { lastEmittedHeading = h; props.onHeadingChange?.(h); }
+        } catch { /* v3 不支持 */ }
+      }));
+      unsubs.push(driver.addEventListener(handle, 'tiltchange', () => {
+        if (internalUpdate || !handle) return;
+        try {
+          const t = driver.getTilt(handle);
+          if (typeof t === 'number' && !Number.isNaN(t)) { lastEmittedTilt = t; props.onTiltChange?.(t); }
+        } catch { /* v3 不支持 */ }
       }));
 
       // 用户事件回调（onClick 等）
@@ -240,6 +266,7 @@ export const Map = defineComponent({
       const d = driverOf();
       if (!handle || !d || props.heading == null) return;
       if (interacting) return;
+      if (lastEmittedHeading !== null && lastEmittedHeading === props.heading) return;
       let cur: number | undefined;
       try { cur = d.getHeading(handle); } catch { return; }
       if (typeof cur === 'number' && !Number.isNaN(cur) && Math.abs(cur - props.heading) > 0.01) suppress(() => d.setHeading(handle!, props.heading));
@@ -248,6 +275,7 @@ export const Map = defineComponent({
       const d = driverOf();
       if (!handle || !d || props.tilt == null) return;
       if (interacting) return;
+      if (lastEmittedTilt !== null && lastEmittedTilt === props.tilt) return;
       let cur: number | undefined;
       try { cur = d.getTilt(handle); } catch { return; }
       if (typeof cur === 'number' && !Number.isNaN(cur) && Math.abs(cur - props.tilt) > 0.01) suppress(() => d.setTilt(handle!, props.tilt));
@@ -271,6 +299,12 @@ export const Map = defineComponent({
       if (handle && d && props.bounds !== undefined) try { d.restrictBounds(handle, props.bounds); } catch { /* ignore */ }
     });
     watch(() => props.mapType, (v) => { const d = driverOf(); if (handle && d && v !== undefined) try { d.setMapType(handle, v); } catch { /* ignore */ } });
+    // 首选语言（4.0+）：string 启用，false 关闭
+    watch(() => props.enablePreferredLanguage, (v) => {
+      const d = driverOf();
+      if (!handle || !d || v === undefined) return;
+      try { if (v === false) d.disablePreferredLanguage(handle); else d.enablePreferredLanguage(handle, v as string); } catch { /* v3 不支持 */ }
+    });
     watch(() => props.defaultCursor, (v) => { const d = driverOf(); if (handle && d && v !== undefined) try { d.setDefaultCursor(handle, v); } catch { /* ignore */ } });
     watch(() => props.draggingCursor, (v) => { const d = driverOf(); if (handle && d && v !== undefined) try { d.setDraggingCursor(handle, v); } catch { /* ignore */ } });
     watch(() => props.theme, (v) => { const d = driverOf(); if (handle && d && v !== undefined) try { d.setTheme(handle, v); } catch { /* ignore */ } });

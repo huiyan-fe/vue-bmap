@@ -132,11 +132,11 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'timeout', type: 'number', required: false, description: '脚本加载超时（毫秒）' },
     { name: 'globalConfig', type: 'Record<string, unknown>', required: false, description: 'JSAPI 全局配置；按值比较，内联对象不会导致 driver 重建' },
     { name: 'unsupportedBehavior', type: '"silent" | "warn" | "throw"', required: false, description: '当前版本不支持的能力如何处理，默认 "warn"；"throw" 只对能力缺失生效' },
-    { name: 'fallback', type: 'ReactNode', required: false, description: '加载中渲染的内容，默认 null' },
-    { name: 'errorFallback', type: 'ReactNode', required: false, description: '加载失败渲染的内容，默认 null（子树整体不渲染）' },
+    { name: 'fallback', type: 'slot', required: false, description: '加载中渲染的内容（具名插槽 #fallback），默认 null' },
+    { name: 'error', type: 'slot', required: false, description: '加载失败渲染的内容（具名插槽 #error，作用域参数 { error }），默认 null（子树整体不渲染）' },
     { name: 'onError', type: '(err: Error) => void', required: false, description: '脚本加载失败回调；不传则 console.error 兜底' },
     { name: 'onLoadConflict', type: '(current, requested) => void', required: false, description: '已加载的 SDK 与本次请求的 loadKey 不一致时回调（复用已加载版本）' },
-    { name: 'children', type: 'ReactNode', required: false, description: '子树；只有 status 为 ready 时才渲染' },
+    { name: '默认插槽', type: 'slot', required: false, description: '子树；只有 status 为 ready 时才渲染' },
   ],
 
   // ─── Map ───
@@ -178,8 +178,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'enablePreferredLanguage', type: 'string | false', required: false, description: '启用首选语言（4.0+，3.0 不支持），传 BMAP_LANGUAGE_* 常量；false 关闭，2.0.2 新增' },
     { name: 'className', type: 'string', required: false, description: '容器 class' },
     { name: 'style', type: 'CSSProperties', required: false, description: '容器样式' },
-    { name: 'errorFallback', type: 'ReactNode', required: false, description: '加载失败时的替代内容' },
-    { name: 'children', type: 'ReactNode', required: false, description: '覆盖物/控件/图层子节点，地图就绪后才挂载' },
+    { name: '默认插槽', type: 'slot', required: false, description: '覆盖物/控件/图层子节点，地图就绪后才挂载' },
     { name: 'onReady', type: '(map: MapHandle) => void', required: false, description: '地图就绪回调' },
     { name: 'onCenterChange', type: '(point: Point) => void', required: false, description: '中心点变化' },
     { name: 'onZoomChange', type: '(zoom: number) => void', required: false, description: '缩放级别变化' },
@@ -357,7 +356,6 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'maxContent', type: 'string', required: false, description: '最大化时的内容' },
     { name: 'enableMaximize', type: 'boolean', required: false, description: '是否启用最大化' },
     { name: 'enableSearchTool', type: 'boolean', required: false, description: '是否开启信息窗内的搜索工具（查看周边等），4.0/GL；构造时生效，2.0.3 新增' },
-    visible,
     { name: 'onOpen', type: '(raw: unknown) => void', required: false, description: '打开回调' },
     { name: 'onClose', type: '(raw: unknown) => void', required: false, description: '关闭回调（含 X 按钮关闭）' },
     { name: 'onClickClose', type: '(raw: unknown) => void', required: false, description: '点击关闭按钮回调' },
@@ -454,7 +452,6 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'uid', type: 'string', required: true, description: 'POI 唯一标识' },
     { name: 'open', type: 'boolean', required: false, description: '是否打开（需挂在 Marker 内）' },
     { name: 'options', type: 'PlaceDetailOptions', required: false, description: '详情选项' },
-    { name: 'children', type: 'ReactNode', required: false, description: '自定义内容' },
   ],
 
   // ─── Control ───
