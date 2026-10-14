@@ -36,6 +36,13 @@ export interface OverlayTargetStore {
 
 export const BMAP_KEY: InjectionKey<ShallowRef<BMapContextValue>> = Symbol('vue-bmap:context');
 export const MAP_KEY: InjectionKey<ShallowRef<MapContextValue | null>> = Symbol('vue-bmap:map');
+/**
+ * 「早期」地图上下文：地图实例一创建就下发（tilesloaded 之前），用于需要在首帧瓦片绘制前
+ * 就挂到地图上的「地图配置型」覆盖物（如 MapMask），避免首帧未加掩膜再加掩膜的闪烁。
+ * ⚠️ 仅限非 GL 敏感的配置型覆盖物使用；Marker 等 GL 覆盖物仍须走 MAP_KEY（tilesloaded 之后），
+ * 否则会命中 SDK 首帧纹理未就绪的崩溃。
+ */
+export const EARLY_MAP_KEY: InjectionKey<ShallowRef<MapContextValue | null>> = Symbol('vue-bmap:map-early');
 export const OVERLAY_TARGET_KEY: InjectionKey<OverlayTargetStore> = Symbol('vue-bmap:overlay-target');
 
 /** 读取 Provider 状态；不在 Provider 内时返回 loading 兜底。 */

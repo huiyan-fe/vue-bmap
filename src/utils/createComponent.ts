@@ -32,6 +32,12 @@ export interface OverlayComponentConfig<P> {
   events?: Array<{ sdk: string; prop: keyof P & string }>;
   displayName?: string;
   skipMount?: boolean;
+  /**
+   * 重建（ctorOnlyProps 变化）前，从当前原生实例读取需要保留的几何/状态，覆盖到重建用的 props。
+   * 用于「编辑后切换 enableEditing 等 ctorOnly 开关导致重建、几何被旧 props 还原」的场景，
+   * 让重建沿用用户编辑后的实际几何（如 Circle 的 center/radius）。
+   */
+  preserveOnRecreate?: (raw: unknown) => Record<string, unknown>;
 }
 
 export interface ControlComponentConfig<P> {
@@ -94,12 +100,19 @@ export function createOverlayComponent<P extends Record<string, any>>(config: Ov
       let unsubs: Array<() => void> = [];
       let optionBaseline: Record<string, unknown> = {};
       let appliedOptKeys: string[] = [];
+      // 重建时从旧实例保留的几何/状态覆盖（见 config.preserveOnRecreate），仅在一次 recreate 内有效
+      let recreateOverrides: Record<string, unknown> | null = null;
 
       const collectFactoryProps = (): Record<string, unknown> => {
         const out: Record<string, unknown> = {};
         for (const k of factoryKeys) {
           const v = props[k];
           if (v !== undefined && v !== null) out[k] = v;
+        }
+        if (recreateOverrides) {
+          for (const [k, v] of Object.entries(recreateOverrides)) {
+            if (v !== undefined && v !== null) out[k] = v;
+          }
         }
         return out;
       };
@@ -177,7 +190,16 @@ export function createOverlayComponent<P extends Record<string, any>>(config: Ov
         store.value = null;
       };
 
-      const recreate = () => { destroy(); create(); };
+      const recreate = () => {
+        // 重建前从旧实例读取需保留的几何/状态（如编辑后的 center/radius），避免被旧 props 还原
+        if (config.preserveOnRecreate && handle) {
+          try { recreateOverrides = config.preserveOnRecreate((handle as { raw: unknown }).raw); }
+          catch { recreateOverrides = null; }
+        }
+        destroy();
+        create();
+        recreateOverrides = null;
+      };
 
       // 就绪判定：map 可用；作为 Marker 子 Label 时还需等 marker handle 就绪
       const ready = computed(() => {

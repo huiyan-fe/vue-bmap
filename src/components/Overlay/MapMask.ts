@@ -11,7 +11,7 @@
  * 走 driver.addOverlay/removeOverlay（type: 'custom'）挂载，ctor 参数变化时重建。
  */
 import { defineComponent, inject, onMounted, onUnmounted, watch, type PropType } from 'vue';
-import { MAP_KEY } from '../../context';
+import { EARLY_MAP_KEY } from '../../context';
 import { stableStringify } from '../../utils/stableStringify';
 import { tryGetSDK } from '../../utils/sdk';
 import { devWarn } from '../../utils/debugWarn';
@@ -42,7 +42,8 @@ export const MapMask = defineComponent({
     isMapMask: { type: Boolean, default: undefined },
   },
   setup(props: any) {
-    const mapCtx = inject(MAP_KEY, null);
+    // 用 EARLY_MAP_KEY（地图实例一就绪即可用，tilesloaded 之前）：在首帧瓦片绘制前就挂上掩膜，消除进场闪烁
+    const mapCtx = inject(EARLY_MAP_KEY, null);
     if (!mapCtx) throw new Error('[vue-bmap] <MapMask> 必须用在 <Map> 内部');
 
     let handle: OverlayHandle | null = null;

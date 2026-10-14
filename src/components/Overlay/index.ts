@@ -93,6 +93,19 @@ export const Circle = createOverlayComponent<CircleProps>({
   positionProp: 'center',
   optionProps: ['radius', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear', 'zIndex'],
   ctorOnlyProps: ['enableEditing', 'enableClicking', 'coordType', 'dashArray', 'node', 'nodeT'],
+  // enableEditing 走 ctorOnlyProps（SDK enableEditing() 对 Circle 有构造期 null bug，用重建处理）；
+  // 但关闭编辑触发重建时，要沿用用户编辑后的实际 center/radius，否则会还原回旧 props（圆“恢复”）
+  preserveOnRecreate: (raw) => {
+    const r = raw as { getCenter?: () => { lng: number; lat: number } | null; getRadius?: () => number };
+    const out: Record<string, unknown> = {};
+    try {
+      const c = r.getCenter?.();
+      if (c && typeof c.lng === 'number' && typeof c.lat === 'number') out.center = { lng: c.lng, lat: c.lat };
+      const rad = r.getRadius?.();
+      if (typeof rad === 'number' && !Number.isNaN(rad)) out.radius = rad;
+    } catch { /* ignore */ }
+    return out;
+  },
   events: OVERLAY_EVENTS,
 });
 

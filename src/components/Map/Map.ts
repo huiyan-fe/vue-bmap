@@ -8,7 +8,7 @@
 import {
   defineComponent, h, onBeforeUnmount, onMounted, provide, shallowRef, watch, type PropType,
 } from 'vue';
-import { useBMapContext, MAP_KEY, type MapContextValue } from '../../context';
+import { useBMapContext, MAP_KEY, EARLY_MAP_KEY, type MapContextValue } from '../../context';
 import type { MapHandle, Point, Bounds } from '../../types';
 import type { DisplayOptions } from '../../types/core';
 import { MapRefImpl } from './MapRef';
@@ -92,7 +92,10 @@ export const Map = defineComponent({
     const bmap = useBMapContext();
     const containerRef = shallowRef<HTMLElement | null>(null);
     const mapCtx = shallowRef<MapContextValue | null>(null);
+    // 早期上下文：地图一创建就下发（tilesloaded 之前），供 MapMask 等配置型覆盖物在首帧前挂载，避免闪烁
+    const earlyCtx = shallowRef<MapContextValue | null>(null);
     provide(MAP_KEY, mapCtx);
+    provide(EARLY_MAP_KEY, earlyCtx);
 
     let handle: MapHandle | null = null;
     let unsubs: Array<() => void> = [];
@@ -168,6 +171,10 @@ export const Map = defineComponent({
         } catch { /* v3 不支持 */ }
       }
 
+      // 早期上下文立即下发（tilesloaded 之前）：让 MapMask 等配置型覆盖物在首帧瓦片绘制前就挂上，消除闪烁。
+      // 注意：mapCtx（MAP_KEY）仍在 tilesloaded 后才下发，Marker 等 GL 覆盖物据此保持原有延迟挂载时机不变。
+      earlyCtx.value = { map: handle, driver };
+
       let mapReady = false;
       const markReady = () => {
         if (mapReady || !handle) return;
@@ -231,6 +238,7 @@ export const Map = defineComponent({
       if (handle && driver) { try { driver.destroyMap(handle); } catch { /* ignore */ } }
       handle = null;
       mapCtx.value = null;
+      earlyCtx.value = null;
     };
 
     onMounted(() => {
@@ -350,7 +358,10 @@ export const Map = defineComponent({
       return out;
     };
 
-    return () => h('div', { ...containerAttrs(), ref: containerRef }, mapCtx.value ? (slots.default ? slots.default() : []) : []);
+    // 渲染子节点的时机从 mapCtx（tilesloaded 后）提前到 earlyCtx（地图实例一就绪）。
+    // 这样 MapMask（用 EARLY_MAP_KEY）能在首帧前挂载；其它覆盖物仍 inject MAP_KEY、create 门控在
+    // mapCtx.value?.map 上，实际创建时机不变（tilesloaded 后），不会提前到 GL 未就绪时挂载。
+    return () => h('div', { ...containerAttrs(), ref: containerRef }, earlyCtx.value ? (slots.default ? slots.default() : []) : []);
   },
 });
 

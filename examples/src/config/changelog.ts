@@ -11,6 +11,17 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '1.0.3',
+    date: '2026-10-14',
+    changes: [
+      'Map：新增 onHeadingChange / onTiltChange 事件（4.0+，朝向/倾斜变化回调）',
+      'Map：enablePreferredLanguage prop 现已生效（建图时下发 + 运行时切换；此前声明了但未接线）',
+      'fix：Circle 关闭编辑后几何被还原（圆“恢复”原位/原半径）——ctorOnly 开关触发重建时保留编辑后的 center/radius',
+      'fix：MapMask 进场首帧闪烁——配置型覆盖物改为在首帧瓦片绘制前挂载（Marker 等 GL 覆盖物挂载时机不变）',
+      '文档：examples API 文档对齐 Vue 实现——BMapProvider errorFallback 更正为 error 具名插槽，移除 Map.errorFallback / InfoWindow.visible / PlaceDetail.children 等 React 残留条目',
+    ],
+  },
+  {
     version: '1.0.2',
     date: '2026-10-09',
     changes: [
