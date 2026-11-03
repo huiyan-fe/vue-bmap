@@ -11,6 +11,14 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '1.0.4',
+    date: '2026-11-03',
+    changes: [
+      'fix：loader 改用静态 import 引入 @baidumap/jsapi-loader，消除动态 import() 在下游打包时生成的 split chunk（曾导致裸 specifier 模块解析失败、地图子树不渲染）',
+      'fix：BMapProvider 加载失败提示不再误导——仅加载类错误（jsapi-loader 抛出）提示检查 ak/白名单/网络，其它错误（如模块解析 TypeError）原样透出',
+    ],
+  },
+  {
     version: '1.0.3',
     date: '2026-10-14',
     changes: [

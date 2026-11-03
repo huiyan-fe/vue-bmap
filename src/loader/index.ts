@@ -1,6 +1,10 @@
 import type { BMapVersion } from '../types';
 import { buildLoadKey, getExisting, register, detectConflict, getAllEntries } from './registry';
 import type { LoadKeyComponents } from '../types';
+// 静态导入：jsapi-loader 是硬依赖且模块顶层无副作用（sideEffects: false），
+// 用静态 import 可避免动态 import() 在下游打包时生成的 split chunk（曾导致
+// 裸 specifier 模块解析失败）。该依赖在 vite.config 中仍按 external 处理。
+import * as jsapiLoader from '@baidumap/jsapi-loader';
 
 export interface LoaderResult {
   rawSDK: unknown;
@@ -53,8 +57,7 @@ async function doLoad(components: LoadKeyComponents, opts: {
   globalConfig?: Record<string, unknown>;
 }): Promise<unknown> {
   // @baidumap/jsapi-loader 默认 export 含 load/reset/getStatus
-  const mod: any = await import('@baidumap/jsapi-loader');
-  const Loader = mod.default ?? mod;
+  const Loader: any = (jsapiLoader as any).default ?? jsapiLoader;
 
   // loader.load 返回对应的命名空间对象（3.0/4.0/未来版本 → window.BMap）
   // 注意：jsapi-loader 自身类型只声明了 '3.0' | 'gl' | '4.0'，但实际接受任意字符串。

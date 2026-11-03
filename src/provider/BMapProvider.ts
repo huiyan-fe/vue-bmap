@@ -71,11 +71,21 @@ export const BMapProvider = defineComponent({
           state.value = { ...state.value, status: 'error', error };
           if (props.onError) props.onError(error);
           else if (typeof console !== 'undefined') {
-            console.error(
-              '[vue-bmap] 地图脚本加载失败，<BMapProvider> 的子树不会渲染。' +
-                '请检查 ak 是否有效、是否配置了域名白名单、网络能否访问百度地图服务。',
-              error,
-            );
+            // 仅当错误来自 jsapi-loader 自身（message 带 [bmap-loader] 前缀，
+            // 即已进入加载流程才失败）时，才提示 ak/白名单/网络；其它错误
+            // （如模块解析 TypeError）原样透出，避免误导排查方向。
+            if (/\[bmap-loader\]/.test(error.message)) {
+              console.error(
+                '[vue-bmap] 地图脚本加载失败，<BMapProvider> 的子树不会渲染。' +
+                  '请检查 ak 是否有效、是否配置了域名白名单、网络能否访问百度地图服务。',
+                error,
+              );
+            } else {
+              console.error(
+                '[vue-bmap] JSAPI 初始化失败，<BMapProvider> 的子树不会渲染。',
+                error,
+              );
+            }
           }
         });
     });
