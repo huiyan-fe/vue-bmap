@@ -118,4 +118,4 @@ export type {
   LoadKeyComponents, LoaderStatus,
 } from './types';
 export type { DisplayOptions } from './types/core';
-export type { GeocoderResult } from './types/results';
+export type { GeocoderResult, PanelTarget } from './types/results';

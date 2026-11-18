@@ -2,6 +2,7 @@
  * 服务结果类型 — 对照 bmap-jsapi-dts/src/service/*.d.ts。
  * 用户从 useLocalSearch/useDrivingRoute 等 Hook 拿到的 data 类型。
  */
+import type { Ref } from 'vue';
 import type { Point, Bounds } from '../types';
 
 // ─── LocalSearch ───
@@ -55,5 +56,11 @@ export interface PanoramaData { id?: string; links?: unknown[]; pov?: { heading?
 export interface BoundaryResult { boundaries: string[]; }
 
 // ─── RenderOptions ───
-export interface RenderOptions { map?: unknown; panel?: string | HTMLElement; selectFirstResult?: boolean; autoViewport?: boolean; highlightMode?: number; viewportOptions?: ViewportOptions; }
+/**
+ * panel 目标：容器 id 字符串 / DOM 元素 / 元素 Ref。
+ * 直接传 `ref<HTMLElement | null>(null)` 即可——元素就绪后会自动生效，
+ * 无需手动 reactive + onMounted 赋值。
+ */
+export type PanelTarget = string | HTMLElement | Ref<HTMLElement | null | undefined>;
+export interface RenderOptions { map?: unknown; panel?: PanelTarget; selectFirstResult?: boolean; autoViewport?: boolean; highlightMode?: number; viewportOptions?: ViewportOptions; }
 export interface ViewportOptions { margins?: number[]; zoomFactor?: number; }

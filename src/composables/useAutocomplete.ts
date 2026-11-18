@@ -7,16 +7,18 @@ import { onScopeDispose, ref, watch, type Ref } from 'vue';
 import { useBMapContext } from '../context';
 import { UnsupportedCapabilityError } from '../drivers/unsupported';
 import { stableStringify } from '../utils/stableStringify';
+import { resolvePanelTarget } from '../utils/panel';
 import { unwrapHandle } from '../utils/handle';
 import { useRenderMap } from './useRenderMap';
 import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
+import type { PanelTarget } from '../types/results';
 
 export interface AutocompleteOptions {
   location?: unknown;
   types?: string[];
   input?: string | HTMLElement;
   /** renderOptions.map 非必传：`<Map>` 内部自动取当前地图，外层需显式传已就绪 handle；见 `useMap`/`useMapReady`。 */
-  renderOptions?: { map?: unknown; panel?: string | HTMLElement };
+  renderOptions?: { map?: unknown; panel?: PanelTarget };
   onSearchComplete?: (results: unknown) => void;
   /** 用户选中某条建议项时触发（对应 SDK 构造项 onConfirm / 原生 onconfirm 事件） */
   onConfirm?: (item: unknown) => void;
@@ -84,6 +86,7 @@ export function useAutocomplete(opts: AutocompleteOptions = {}): AutocompleteHoo
     if (opts.renderOptions || renderMap.value) {
       const ro: Record<string, unknown> = {};
       if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
+      resolvePanelTarget(ro);
       if (renderMap.value) ro.map = unwrapHandle(renderMap.value);
       searchOpts.renderOptions = ro;
     }

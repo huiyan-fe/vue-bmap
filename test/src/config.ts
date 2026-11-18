@@ -66,6 +66,7 @@ export const PAGES: TestPage[] = [
   { id: 'three-layer', name: 'ThreeLayer', category: L, ready: true },
   // 服务
   { id: 'local-search', name: 'useLocalSearch', category: S, ready: true },
+  { id: 'local-search-panel', name: 'useLocalSearch（panel 时机）', category: S, ready: true },
   { id: 'geocoder', name: 'useGeocoder', category: S, ready: true },
   { id: 'driving-route', name: 'useDrivingRoute', category: S, ready: true },
   { id: 'walking-route', name: 'useWalkingRoute', category: S, ready: true },

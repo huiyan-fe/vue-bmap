@@ -7,6 +7,7 @@ import { onScopeDispose, ref, shallowRef, watch, type Ref } from 'vue';
 import { useBMapContext } from '../context';
 import { UnsupportedCapabilityError } from '../drivers/unsupported';
 import { stableStringify } from '../utils/stableStringify';
+import { resolvePanelTarget } from '../utils/panel';
 import { isHandle, unwrapHandle } from '../utils/handle';
 import { useRenderMap } from './useRenderMap';
 import { fallbackLocation } from './renderHelpers';
@@ -47,6 +48,7 @@ export function useTruckRoute(opts: TruckRouteOptions = {}): TruckRouteHookResul
     const dataOnly = opts.autoRender === false;
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
+    resolvePanelTarget(ro);
     if (dataOnly) delete ro.map;
     else if (map) ro.map = unwrapHandle(map);
     const searchOpts: Record<string, unknown> = {};

@@ -11,6 +11,16 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '1.0.5',
+    date: '2026-11-18',
+    changes: [
+      'feat：所有带 panel 的服务 hook（useLocalSearch / useDrivingRoute / useWalkingRoute / useRidingRoute / useTransitRoute / useTruckRoute / useBusLineSearch / useAutocomplete）支持 renderOptions.panel 直接传 ref<HTMLElement>，元素就绪后自动生效，无需 reactive + onMounted 手动赋值',
+      'fix：注入上下文错误提示区分场景——「不在 setup() 同步调用」（onMounted 的 await 之后 / 定时器 / 事件回调）与「不在 <BMapProvider>/<Map> 内」分别给出可定位的提示，不再一律提示“必须用在 Provider 内”',
+      'fix：examples 示例中 panel 用法修正——原示例在 setup 中传未就绪元素（或 Ref 对象），与实际可用写法不符；补充「panel 只需空容器、搜索框/按钮需自己实现」说明',
+      'test：新增 8 个服务 hook 的 panel Ref 接线自动化测试（假 driver 断言 renderOptions.panel 从无到元素）',
+    ],
+  },
+  {
     version: '1.0.4',
     date: '2026-11-03',
     changes: [

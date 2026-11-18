@@ -25,11 +25,13 @@ import { onScopeDispose, ref, watch, type Ref } from 'vue';
 import { useBMapContext } from '../context';
 import { UnsupportedCapabilityError } from '../drivers/unsupported';
 import { stableStringify } from '../utils/stableStringify';
+import { resolvePanelTarget } from '../utils/panel';
 import { isHandle, unwrapHandle } from '../utils/handle';
 import { getSDK } from '../utils/sdk';
 import { useRenderMap } from './useRenderMap';
 import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 import type { ServiceHandle, Point, Bounds } from '../types';
+import type { PanelTarget } from '../types/results';
 
 // ─── 类型 ───
 
@@ -39,7 +41,7 @@ export interface LocalSearchRenderOptions {
    * 在 `<Map>` 外层则需显式传**已就绪**的 handle（用 `useMap`/`useMapReady` 拿）。显式传入优先。
    */
   map?: { __brand: string; raw: unknown };
-  panel?: string | HTMLElement;
+  panel?: PanelTarget;
   selectFirstResult?: boolean;
   autoViewport?: boolean;
   viewportOptions?: { noAnimation?: boolean; margins?: number[]; zoomFactor?: number };
@@ -136,6 +138,7 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     const dataOnly = opts.autoRender === false;
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
+    resolvePanelTarget(ro);
     if (dataOnly) delete ro.map;                       // 仅取数据：不注入地图 → 不自动渲染
     else if (renderMap.value) ro.map = unwrapHandle(renderMap.value);
 

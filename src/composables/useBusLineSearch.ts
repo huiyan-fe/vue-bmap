@@ -8,15 +8,17 @@ import { onScopeDispose, ref, watch, type Ref } from 'vue';
 import { useBMapContext } from '../context';
 import { UnsupportedCapabilityError } from '../drivers/unsupported';
 import { stableStringify } from '../utils/stableStringify';
+import { resolvePanelTarget } from '../utils/panel';
 import { unwrapHandle } from '../utils/handle';
 import { useRenderMap } from './useRenderMap';
 import { fallbackLocation } from './renderHelpers';
 import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
+import type { PanelTarget } from '../types/results';
 
 export interface BusLineSearchOptions {
   location?: unknown;
   /** renderOptions.map 非必传：`<Map>` 内部自动取当前地图，外层需显式传已就绪 handle；见 `useMap`/`useMapReady`。 */
-  renderOptions?: { map?: unknown; panel?: string | HTMLElement; autoViewport?: boolean };
+  renderOptions?: { map?: unknown; panel?: PanelTarget; autoViewport?: boolean };
   /** 是否自动在地图上渲染线路（默认 true）。传 false＝仅取数据：不注入地图、缺省 location 用中心点，避免自动画线路。 */
   autoRender?: boolean;
   onGetBusListComplete?: (results: unknown) => void;
@@ -65,6 +67,7 @@ export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearch
     const dataOnly = opts.autoRender === false;
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
+    resolvePanelTarget(ro);
     if (dataOnly) delete ro.map;
     else if (renderMap.value) ro.map = unwrapHandle(renderMap.value);
     const searchOpts: Record<string, unknown> = {};

@@ -62,6 +62,7 @@ import PixelLayerPage from './pages/layer/PixelLayerPage.vue';
 import BaiduLayerPage from './pages/layer/BaiduLayerPage.vue';
 import ThreeLayerPage from './pages/layer/ThreeLayerPage.vue';
 import LocalSearchPage from './pages/service/LocalSearchPage.vue';
+import LocalSearchPanelPage from './pages/service/LocalSearchPanelPage.vue';
 import DrivingRoutePage from './pages/service/DrivingRoutePage.vue';
 import WalkingRoutePage from './pages/service/WalkingRoutePage.vue';
 import RidingRoutePage from './pages/service/RidingRoutePage.vue';
@@ -140,6 +141,7 @@ const PAGE_MAP: Record<string, Component> = {
   'baidu-layer': BaiduLayerPage,
   'three-layer': ThreeLayerPage,
   'local-search': LocalSearchPage,
+  'local-search-panel': LocalSearchPanelPage,
   'driving-route': DrivingRoutePage,
   'walking-route': WalkingRoutePage,
   'riding-route': RidingRoutePage,

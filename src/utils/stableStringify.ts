@@ -1,7 +1,11 @@
+import { isRef } from 'vue';
+
 /**
  * 把对象/数组序列化为稳定字符串，作为 effect 依赖用。
  * 处理 path 等每次 render 新引用的对象，避免覆盖物/服务无意义重建。
  * 遇到 DOM 元素 / 函数 / handle 时返回类型标记，不递归进去。
+ * Ref 解包为其 value 参与序列化：依赖比较关心的是「值」而非 Ref 包装
+ * （如 renderOptions.panel 传 ref，元素就绪后 key 变化 → 触发重建）。
  *
  * undefined 与 null 输出不同标记：组件里「没传这个 prop」和「显式传 null」
  * 会走不同的 SDK 代码路径，依赖比较必须能区分，否则两者互换时 effect 不重跑。
@@ -34,6 +38,8 @@ function serialize(value: unknown, seen: WeakSet<object>): string {
   if (value === null) return 'null';
   if (typeof value === 'function') return 'fn';
   if (typeof value !== 'object') return String(value);
+  // Ref 解包：依赖比较关心值，而不是 Ref 包装（也避免递归进内部 dep）
+  if (isRef(value)) return serialize(value.value, seen);
   // DOM 元素 / 节点 — 不递归
   if (typeof HTMLElement !== 'undefined' && value instanceof HTMLElement) return '<HTMLElement>';
   if (typeof Node !== 'undefined' && value instanceof Node) return '<Node>';

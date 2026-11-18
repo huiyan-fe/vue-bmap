@@ -78,13 +78,19 @@ registerDemo('local-search', {
   }),
   code: `<script setup>
 // （v1.0.2 新增）
+import { ref } from 'vue';
 import { useLocalSearch } from '@baidumap/vue-bmap';
-// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
-const { search } = useLocalSearch({
+
+// ✅ hook 必须在 setup() 中同步调用，且本组件须位于 <BMapProvider> 的后代里
+// ✅ panel 只需一个空容器，结果列表由 SDK 渲染；搜索框 / 按钮需自己实现
+const panelRef = ref<HTMLElement | null>(null);
+
+const { search, loading } = useLocalSearch({
   location: '北京',
-  renderOptions: { panel: panelEl, autoViewport: true },
+  // 直接传 Ref：元素就绪后自动生效（v1.0.5+），无需 reactive + onMounted 赋值
+  renderOptions: { panel: panelRef, autoViewport: true },
 });
-search('餐厅');
+// 也支持传容器 id（如 panel: 'r-result'）或已就绪的 HTMLElement
 <\/script>`,
 });
 
@@ -133,10 +139,10 @@ registerDemo('driving-route', {
   code: `<script setup>
 // （v1.0.2 新增）
 import { useDrivingRoute } from '@baidumap/vue-bmap';
-// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
+// 在 setup() 中调用（组件须在 <BMapProvider> 后代内）；renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useDrivingRoute({
   location: '北京',
-  renderOptions: { panel: panelEl, autoViewport: true },
+  renderOptions: { panel: 'r-result', autoViewport: true }, // 容器 id（<div id="r-result" />）；也可传元素，见 useLocalSearch 示例
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.501, lat: 39.937 });
 <\/script>`,
@@ -152,10 +158,10 @@ registerDemo('walking-route', {
   code: `<script setup>
 // （v1.0.2 新增）
 import { useWalkingRoute } from '@baidumap/vue-bmap';
-// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
+// 在 setup() 中调用（组件须在 <BMapProvider> 后代内）；renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useWalkingRoute({
   location: '北京',
-  renderOptions: { panel: panelEl, autoViewport: true },
+  renderOptions: { panel: 'r-result', autoViewport: true }, // 容器 id（<div id="r-result" />）；也可传元素，见 useLocalSearch 示例
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.417, lat: 39.928 });
 <\/script>`,
@@ -171,10 +177,10 @@ registerDemo('riding-route', {
   code: `<script setup>
 // （v1.0.2 新增）
 import { useRidingRoute } from '@baidumap/vue-bmap';
-// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
+// 在 setup() 中调用（组件须在 <BMapProvider> 后代内）；renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useRidingRoute({
   location: '北京',
-  renderOptions: { panel: panelEl, autoViewport: true },
+  renderOptions: { panel: 'r-result', autoViewport: true }, // 容器 id（<div id="r-result" />）；也可传元素，见 useLocalSearch 示例
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.45, lat: 39.93 });
 <\/script>`,
@@ -208,10 +214,10 @@ registerDemo('transit-route', {
   code: `<script setup>
 // （v1.0.2 新增）
 import { useTransitRoute } from '@baidumap/vue-bmap';
-// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
+// 在 setup() 中调用（组件须在 <BMapProvider> 后代内）；renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useTransitRoute({
   location: '北京',
-  renderOptions: { panel: panelEl, autoViewport: true },
+  renderOptions: { panel: 'r-result', autoViewport: true }, // 容器 id（<div id="r-result" />）；也可传元素，见 useLocalSearch 示例
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.326, lat: 39.989 });
 <\/script>`,
@@ -450,10 +456,10 @@ registerDemo('truck-route', {
   code: `<script setup>
 // （v1.0.2 新增）
 import { useTruckRoute } from '@baidumap/vue-bmap';
-// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
+// 在 setup() 中调用（组件须在 <BMapProvider> 后代内）；renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useTruckRoute({
   location: '北京',
-  renderOptions: { panel: panelEl, autoViewport: true },
+  renderOptions: { panel: 'r-result', autoViewport: true }, // 容器 id（<div id="r-result" />）；也可传元素，见 useLocalSearch 示例
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.501, lat: 39.937 });
 <\/script>`,

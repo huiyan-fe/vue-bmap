@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { ref } from 'vue';
 import { stableStringify } from '../stableStringify';
 
 // 模拟 SDK handle 结构（{__brand, raw, type}），验证句柄型依赖比较。
@@ -28,5 +29,13 @@ describe('stableStringify', () => {
   it('同一 handle 多次序列化稳定', () => {
     const h = makeHandle({ sdk: 'X' });
     expect(stableStringify(h)).toBe(stableStringify(h));
+  });
+
+  it('Ref 解包为 value：值变化能反映到依赖 key（panel Ref 就绪后触发重建）', () => {
+    const el = { tagName: 'DIV' } as unknown as HTMLElement;
+    const panel = ref<HTMLElement | null>(null);
+    const before = stableStringify({ panel });
+    panel.value = el;
+    expect(stableStringify({ panel })).not.toBe(before);
   });
 });

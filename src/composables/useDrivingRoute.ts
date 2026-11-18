@@ -11,13 +11,14 @@ import { onScopeDispose, ref, shallowRef, watch, type Ref } from 'vue';
 import { useBMapContext } from '../context';
 import { UnsupportedCapabilityError } from '../drivers/unsupported';
 import { stableStringify } from '../utils/stableStringify';
+import { resolvePanelTarget } from '../utils/panel';
 import { isHandle, unwrapHandle } from '../utils/handle';
 import { useRenderMap } from './useRenderMap';
 import { fallbackLocation } from './renderHelpers';
 import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 import { getSDK } from '../utils/sdk';
 import type { Point, MapHandle } from '../types';
-import type { DrivingRouteResult } from '../types/results';
+import type { DrivingRouteResult, PanelTarget } from '../types/results';
 
 export interface DrivingRouteRenderOptions {
   /**
@@ -27,7 +28,7 @@ export interface DrivingRouteRenderOptions {
    * 显式传入始终优先于自动获取。
    */
   map?: MapHandle;
-  panel?: string | HTMLElement;
+  panel?: PanelTarget;
   selectFirstResult?: boolean;
   autoViewport?: boolean;
   viewportOptions?: { noAnimation?: boolean; margins?: number[]; zoomFactor?: number };
@@ -105,6 +106,7 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
     const dataOnly = opts.autoRender === false;
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
+    resolvePanelTarget(ro);
     if (dataOnly) delete ro.map;                       // 仅取数据：不注入地图 → 不自动渲染路线
     else if (map) ro.map = unwrapHandle(map);
 
