@@ -64,6 +64,8 @@ export const PAGES: TestPage[] = [
   { id: 'pixel-layer', name: 'PixelLayer', category: L, ready: true },
   { id: 'baidu-layer', name: 'BaiduLayer', category: L, ready: true },
   { id: 'three-layer', name: 'ThreeLayer', category: L, ready: true },
+  { id: 'heatmap-layer', name: 'HeatmapLayer', category: L, ready: true },
+  { id: 'cluster-layer', name: 'ClusterLayer', category: L, ready: true },
   // 服务
   { id: 'local-search', name: 'useLocalSearch', category: S, ready: true },
   { id: 'local-search-panel', name: 'useLocalSearch（panel 时机）', category: S, ready: true },

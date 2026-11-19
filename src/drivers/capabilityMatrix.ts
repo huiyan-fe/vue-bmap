@@ -28,6 +28,9 @@ const V4_LAYER_CLASS: Capability[] = [
   'FillLayer', 'DOMLayer',
   'PointIconLayer', 'PointShapeLayer',
   'LineLayer', 'PixelLayer', 'BaiduLayer', 'ThreeLayer',
+  // 数据可视化图层（4.0+ Visualization）
+  // HeatmapLayer 是组件名（SDK 类为 Heatmap），两个名字都注册，供 examples 能力判断与 driver 门控共用
+  'Heatmap', 'HeatmapLayer', 'ClusterLayer',
 ];
 
 // ── 4.0+ Map 图层方法 ──

@@ -58,6 +58,7 @@ export {
   RasterTileLayer, WMSLayer, WMTSLayer, XYZLayer, MVTLayer,
   PixelLayer, BaiduLayer, PanoramaCoverageLayer, FeatureLayer, DOMLayer,
   PointShapeLayer, PointIconLayer, FillLayer, LineLayer, ThreeLayer,
+  HeatmapLayer, ClusterLayer,
 } from './components/Layer';
 export type {
   TileLayerProps, NormalLayerProps, GeoJSONLayerProps, DistrictLayerProps,
@@ -69,6 +70,7 @@ export type {
   FillStyleExpr, FillLayerStyle, FillLayerOptions, FillLayerEvent, FillLayerProps,
   LineStyleExpr, LineLayerStyle, LineLayerOptions, LineLayerEvent, LineLayerProps,
   ThreeObject, ThreeLayerInstance, ThreeLayerHook, ThreeLayerRef, ThreeLayerOptions, ThreeLayerProps,
+  HeatmapLayerOptions, HeatmapLayerProps, ClusterLayerOptions, ClusterLayerProps,
 } from './components/Layer';
 
 // ─── 右键菜单 / 全景 ───

@@ -397,6 +397,10 @@ export interface BMapDriver {
   createBaiduLayer(options?: unknown): LayerHandle | null;
   createThreeLayer(options?: unknown): LayerHandle | null;
 
+  // 数据可视化图层（4.0+ Visualization）
+  createHeatmap(options?: unknown): LayerHandle | null;
+  createClusterLayer(options?: unknown): LayerHandle | null;
+
   // ─────────────── 30. ContextMenu 工厂 ───────────────
   createContextMenu(options?: unknown): OverlayHandle | null;
   createMenuItem(text: string, callback: (point?: { lng: number; lat: number }) => void, options?: unknown): OverlayHandle | null;

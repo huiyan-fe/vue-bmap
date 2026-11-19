@@ -11,6 +11,14 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '1.0.6',
+    date: '未发布',
+    changes: [
+      'feat：新增数据可视化图层（4.0+）——HeatmapLayer 热力图（size/unit/gradient/weightField 等）、ClusterLayer 点聚合（clusterRadius/clusterIcon/singleStyle/updateRealTime 等，点击聚合点自动 fitView），均支持 setData 数据驱动与事件',
+      'test：新增 HeatmapLayer / ClusterLayer 测试页；examples 补齐两个组件的导航、API 文档与示例',
+    ],
+  },
+  {
     version: '1.0.5',
     date: '2026-11-18',
     changes: [

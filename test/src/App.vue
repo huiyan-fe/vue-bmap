@@ -61,6 +61,8 @@ import LineLayerPage from './pages/layer/LineLayerPage.vue';
 import PixelLayerPage from './pages/layer/PixelLayerPage.vue';
 import BaiduLayerPage from './pages/layer/BaiduLayerPage.vue';
 import ThreeLayerPage from './pages/layer/ThreeLayerPage.vue';
+import HeatmapLayerPage from './pages/layer/HeatmapLayerPage.vue';
+import ClusterLayerPage from './pages/layer/ClusterLayerPage.vue';
 import LocalSearchPage from './pages/service/LocalSearchPage.vue';
 import LocalSearchPanelPage from './pages/service/LocalSearchPanelPage.vue';
 import DrivingRoutePage from './pages/service/DrivingRoutePage.vue';
@@ -140,6 +142,8 @@ const PAGE_MAP: Record<string, Component> = {
   'pixel-layer': PixelLayerPage,
   'baidu-layer': BaiduLayerPage,
   'three-layer': ThreeLayerPage,
+  'heatmap-layer': HeatmapLayerPage,
+  'cluster-layer': ClusterLayerPage,
   'local-search': LocalSearchPage,
   'local-search-panel': LocalSearchPanelPage,
   'driving-route': DrivingRoutePage,

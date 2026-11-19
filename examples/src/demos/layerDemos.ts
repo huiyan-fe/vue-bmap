@@ -4,6 +4,7 @@ import {
   FillLayer, DOMLayer, LineLayer,
   PointIconLayer, PointShapeLayer, PanoramaCoverageLayer,
   ThreeLayer,
+  HeatmapLayer, ClusterLayer,
 } from '@baidumap/vue-bmap';
 import type { ThreeLayerRef } from '@baidumap/vue-bmap';
 import { MapContainer } from '../components/MapContainer';
@@ -392,6 +393,81 @@ function onInit(renderer, scene, camera, layer) {
 <template>
   <Map :center="center" :zoom="16">
     <ThreeLayer ref="layerRef" antialias :z-index="5" :on-init="onInit" />
+  </Map>
+</template>`,
+});
+
+// ─── 数据可视化图层（v1.0.6 新增）：随机点 GeoJSON 生成 ───
+function randomPointsData(count: number, withWeight: boolean) {
+  const features = Array.from({ length: count }, (_, i) => ({
+    type: 'Feature' as const,
+    geometry: { type: 'Point' as const, coordinates: [116.34 + Math.random() * 0.14, 39.88 + Math.random() * 0.09] },
+    properties: withWeight ? { id: i, name: `点${i}`, count: 1 + Math.floor(Math.random() * 100) } : { id: i, name: `点${i}` },
+  }));
+  return { type: 'FeatureCollection' as const, features };
+}
+
+// ─── HeatmapLayer 热力图（v1.0.6 新增） ───
+registerDemo('heatmap-layer', {
+  component: defineComponent({
+    name: 'HeatmapLayerDemo',
+    setup: () => () => h(MapContainer, { center: C, zoom: 12 }, {
+      default: () => [h(HeatmapLayer as any, {
+        data: randomPointsData(300, true),
+        size: 30,
+        opacity: 0.9,
+        gradient: { 0: 'rgba(0, 90, 255, 1)', 0.5: 'rgba(0, 255, 120, 1)', 1: 'rgba(255, 0, 0, 1)' },
+        weightField: 'count',
+      })],
+    }),
+  }),
+  code: `<!-- HeatmapLayer（v1.0.6 新增）：热力图，data 为 GeoJSON，权重取 properties[weightField]（默认 count） -->
+<script setup>
+import { Map, HeatmapLayer } from '@baidumap/vue-bmap';
+const data = { type: 'FeatureCollection', features: Array.from({ length: 300 }, (_, i) => ({
+  type: 'Feature',
+  geometry: { type: 'Point', coordinates: [116.34 + Math.random() * 0.14, 39.88 + Math.random() * 0.09] },
+  properties: { id: i, count: 1 + Math.floor(Math.random() * 100) },
+})) };
+<\/script>
+<template>
+  <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="12">
+    <HeatmapLayer :data="data" :size="30" :opacity="0.9"
+      :gradient="{ 0: 'rgba(0, 90, 255, 1)', 0.5: 'rgba(0, 255, 120, 1)', 1: 'rgba(255, 0, 0, 1)' }"
+      weight-field="count" />
+  </Map>
+</template>`,
+});
+
+// ─── ClusterLayer 点聚合（v1.0.6 新增） ───
+registerDemo('cluster-layer', {
+  component: defineComponent({
+    name: 'ClusterLayerDemo',
+    setup: () => () => h(MapContainer, { center: C, zoom: 11 }, {
+      default: () => [h(ClusterLayer as any, {
+        data: randomPointsData(2000, false),
+        clusterRadius: 60,
+        clusterMinPoints: 2,
+        onClick: (e: any) => { const v = e?.value; if (v?.isCluster) console.log(`聚合 ${v.pointCount} 个点`, v.latLng); },
+      })],
+    }),
+  }),
+  code: `<!-- ClusterLayer（v1.0.6 新增）：点聚合，data 为 GeoJSON；点击聚合点自动 fitView（fitViewOnClick 默认 true） -->
+<script setup>
+import { Map, ClusterLayer } from '@baidumap/vue-bmap';
+const data = { type: 'FeatureCollection', features: Array.from({ length: 2000 }, (_, i) => ({
+  type: 'Feature',
+  geometry: { type: 'Point', coordinates: [116.34 + Math.random() * 0.14, 39.88 + Math.random() * 0.09] },
+  properties: { id: i, name: '点' + i },
+})) };
+const onClusterClick = (e) => {
+  const v = e.value;
+  if (v?.isCluster) console.log('聚合 ' + v.pointCount + ' 个点', v.latLng);
+};
+<\/script>
+<template>
+  <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="11">
+    <ClusterLayer :data="data" :cluster-radius="60" :cluster-min-points="2" :on-click="onClusterClick" />
   </Map>
 </template>`,
 });

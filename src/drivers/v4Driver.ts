@@ -1410,6 +1410,10 @@ export function createV4Driver(
     createBaiduLayer: (o) => createLayerFactory('BaiduLayer', () => new rawSDK.BaiduLayer(o), 'custom'),
     createThreeLayer: (o) => createLayerFactory('ThreeLayer', () => new rawSDK.ThreeLayer(o), 'custom'),
 
+    // 数据可视化图层（4.0+ Visualization）
+    createHeatmap: (o) => createLayerFactory('HeatmapLayer', () => new rawSDK.Heatmap(o), 'custom'),
+    createClusterLayer: (o) => createLayerFactory('ClusterLayer', () => new rawSDK.ClusterLayer(o), 'custom'),
+
     // ─────────────── 30. ContextMenu ───────────────
     createContextMenu: (o) => createOverlayFactory('ContextMenu', () => new rawSDK.ContextMenu(o), 'contextMenu'),
     createMenuItem: (text, cb, o) => createOverlayFactory('MenuItem', () => new rawSDK.MenuItem(text, cb, o), 'menuItem'),

@@ -64,6 +64,8 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'point-shape-layer', name: 'PointShapeLayer', category: 'Layer', description: '图形点图层（v1.0.2 新增）' },
   { id: 'panorama-coverage-layer', name: 'PanoramaCoverageLayer', category: 'Layer', description: '全景覆盖图层（v1.0.2 新增）' },
   { id: 'three-layer', name: 'ThreeLayer', category: 'Layer', description: 'three.js 图层（4.0+，three.js 需宿主自备并挂到 window.THREE，v1.0.2 新增）' },
+  { id: 'heatmap-layer', name: 'HeatmapLayer', category: 'Layer', description: '热力图图层（4.0+，v1.0.6 新增）' },
+  { id: 'cluster-layer', name: 'ClusterLayer', category: 'Layer', description: '点聚合图层（4.0+，v1.0.6 新增）' },
 
   // Service
   { id: 'geocoder', name: 'useGeocoder', category: 'Service', description: '地理编码' },

@@ -189,7 +189,9 @@ const map = useMapRef();
 
 从顶层直接 import，均需在 `<Map>` 内部使用：
 
-- `useMap`、`useMapEvent`、`useMapReady`、`useDriver`、`useMapRef`、`useCapabilities`、`useSymbol`、`useIcon`、`useGeocoder`
+- **基础**：`useMap`、`useMapEvent`、`useMapReady`、`useDriver`、`useMapRef`、`useCapabilities`、`useMapStatus`、`useSymbol`、`useIcon`
+- **检索 / 路线**：`useLocalSearch`、`useGeocoder`、`useDrivingRoute`、`useWalkingRoute`、`useRidingRoute`、`useTransitRoute`、`useTruckRoute`、`useBusLineSearch`、`useAutocomplete`、`useBoundary`、`useLocalCity`、`usePlaceDetail`、`useConvertor`、`usePanoramaService`
+- **逃生舱**：`useRawControl`、`useRawOverlay`（挂载任意原生 Control / Overlay 实例）
 
 `useCapabilities()` 返回当前地图版本支持的能力集合（响应式），可用于提前分支：
 
@@ -205,11 +207,13 @@ const caps = useCapabilities();
 
 从 `@baidumap/vue-bmap` 顶层直接 import，每个组件都带 TypeScript 类型。
 
-- **覆盖物**：`Marker`、`Label`、`Polyline`、`Polygon`、`Circle`、`Rectangle`、`BezierCurve`、`Prism`、`GroundOverlay`、`GroundPoint`、`PointCollection`、`InfoWindow`、`Symbol`、`Icon`、`IconSequence`、`Hotspot`、`Marker3D`
-- **控件**：`NavigationControl`、`NavigationControl3D`、`ScaleControl`、`OverviewMapControl`、`MapTypeControl`、`CopyrightControl`、`GeolocationControl`、`PanoramaControl`、`ZoomControl`、`CityListControl`、`LocationControl`、`LogoControl`
-- **图层**：`TileLayer`、`NormalLayer`、`GeoJSONLayer`、`DistrictLayer`、`TrafficLayer`、`CustomLayer`、`CanvasLayer`、`RasterTileLayer`、`WMSLayer`、`WMTSLayer`、`XYZLayer`、`MVTLayer`
+- **覆盖物**：`Marker`、`Label`、`Polyline`、`Polygon`、`Circle`、`Rectangle`、`BezierCurve`、`Prism`、`GroundOverlay`、`GroundPoint`、`PointCollection`、`InfoWindow`、`Symbol`、`Icon`、`IconSequence`、`Hotspot`、`Marker3D`、`MapMask`、`SimpleInfoWindow`、`PlaceDetail`、`PlaceDetailPanel`、`CustomOverlay`、`RawOverlay`
+- **控件**：`NavigationControl`、`NavigationControl3D`、`ScaleControl`、`OverviewMapControl`、`MapTypeControl`、`CopyrightControl`、`GeolocationControl`、`PanoramaControl`、`ZoomControl`、`CityListControl`、`LocationControl`、`LogoControl`、`CustomControl`、`RawControl`
+- **图层**：`TileLayer`、`NormalLayer`、`GeoJSONLayer`、`DistrictLayer`、`TrafficLayer`、`CustomLayer`、`CanvasLayer`、`RasterTileLayer`、`WMSLayer`、`WMTSLayer`、`XYZLayer`、`MVTLayer`、`FillLayer`、`DOMLayer`、`LineLayer`、`PointIconLayer`、`PointShapeLayer`、`PanoramaCoverageLayer`、`PixelLayer`、`BaiduLayer`、`FeatureLayer`、`ThreeLayer`
+- **数据可视化图层（4.0+）**：`HeatmapLayer`（热力图）、`ClusterLayer`（点聚合）
+- **其它**：`ContextMenu` / `MenuItem`（右键菜单）、`Panorama` / `PanoramaLabel`（全景）
 
-> 部分组件只在 4.0（WebGL）下可用（如 `Prism`、`Marker3D`、`DistrictLayer`）。在不支持的版本使用时，默认会打印一条警告并跳过，不会让页面崩溃。
+> 部分组件只在 4.0（WebGL）下可用（如 `Prism`、`Marker3D`、`DistrictLayer`、以及数据可视化图层 `HeatmapLayer` / `ClusterLayer`）。在不支持的版本使用时，默认会打印一条警告并跳过，不会让页面崩溃。
 
 ## 命名约定与冲突处理
 

@@ -90,3 +90,9 @@ export { LineLayer } from './LineLayer';
 export type { LineStyleExpr, LineLayerStyle, LineLayerOptions, LineLayerEvent, LineLayerProps } from './LineLayer';
 export { ThreeLayer } from './ThreeLayer';
 export type { ThreeObject, ThreeLayerInstance, ThreeLayerHook, ThreeLayerRef, ThreeLayerOptions, ThreeLayerProps } from './ThreeLayer';
+
+// ─── 数据可视化图层（4.0+ Visualization） ───
+export { HeatmapLayer } from './HeatmapLayer';
+export type { HeatmapLayerOptions, HeatmapLayerProps } from './HeatmapLayer';
+export { ClusterLayer } from './ClusterLayer';
+export type { ClusterLayerOptions, ClusterLayerProps } from './ClusterLayer';
