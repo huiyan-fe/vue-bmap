@@ -3,7 +3,7 @@
 对照 [JSAPI 4.0 类参考](https://lbs.baidu.com/jsapi/refdoc/v4/modules/BMap.html) 梳理的覆盖缺口与补齐计划。
 缺口集中在新版「数据可视化图层」主线；react-bmap 同样缺失（两库共同缺口）。
 
-- 当前版本：1.0.3（已发布）
+- 当前版本：1.0.6（已发布）
 - 状态标记：⬜ 待做 / 🔄 进行中 / ✅ 已完成
 
 ---
@@ -48,10 +48,10 @@
 
 | 项 | 状态 | 备注 |
 |---|---|---|
-| 事件映射类型 | ⬜ | TrackLineEventMap / ViewAnimationEventMap / VisualPickEvent / GraphEventMap / GraphVertexEvent / GraphEditEvent / NormalLayerPickEvent / MVTLayerPickEvent 等 4.0 新增事件类型（类型级，可后续随 dts 对齐补） |
+| 事件映射类型 | ✅ | VisualPickEvent / NormalLayerPickEvent / MVTLayerPickEvent / GraphEditEvent / GraphVertexEvent / GraphEventMap / ViewAnimationEventMap / TrackLineEventMap 已补并导出（v1.0.6） |
 | Truck 路线专属结果类型 | ✅ | TruckRouteResult / TruckRouteLine / TruckRoutePlan / TruckTrafficCondition 已补（v1.0.6） |
 | LocalSearchSearchOption | ✅ | 已补并导出（v1.0.6） |
-| Icons 常量组 | ⬜ | SDK 的 Icons 是内部 SVG 图标对象（LOCATION/PLUS/MINUS/箭头等），非公开 BMAP_* 常量，不建议导出（保留） |
+| Icons 常量组 | ✅ | 已确认：SDK 的 Icons 是内部 SVG 图标对象（LOCATION/PLUS/MINUS/箭头等），非公开 BMAP_* 常量，不导出（v1.0.6 决策） |
 
 ---
 

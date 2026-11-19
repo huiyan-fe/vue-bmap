@@ -135,3 +135,9 @@ export type {
 } from './types';
 export type { DisplayOptions, MapLabel, MapLabelStyle, StyleExpress, ParkingSpotOptions } from './types/core';
 export type { GeocoderResult, PanelTarget, TruckRouteResult, TruckRouteLine, TruckRoutePlan, TruckTrafficCondition } from './types/results';
+export type {
+  VisualPickEvent, NormalLayerPickEvent, MVTLayerPickEvent,
+  GraphEditEvent, GraphVertexEvent, GraphLineUpdateEvent, GraphMouseOutEvent, GraphEventMap,
+  ViewAnimationEventMap,
+  TrackLineProgressValue, TrackLineStatusValue, TrackLineEventMap,
+} from './types/events';
