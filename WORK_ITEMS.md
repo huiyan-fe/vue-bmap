@@ -24,34 +24,34 @@
 | BarLayer 柱状图层 | ✅ | 含 BarSegmentValue；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
 | FlyLineLayer 飞线图层 | ✅ | 含 FlyLineLayerOptions；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
 | TrackLine 轨迹线 | ✅ | 4.0 新能力，含跟随视角 / 进度事件（TrackLineFollowOptions / TrackLineMovePointOptions / TrackLineEventMap / TrackLineProgressValue / TrackLineStatusValue）；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
-| DeckglLayer deck.gl 接入 | ⬜ | 依赖宿主自备 deck.gl；含 DeckglLayerError |
-| ThreejsLayer three.js 接入 | ⬜ | 依赖宿主自备 three.js；与已实现的 ThreeLayer 是不同类；含 ThreejsLayerError / ThreejsRenderContext |
-| WebGLCustomLayer 自定义着色器 | ⬜ | 含 Attribute / BlendFunc / Draw / RenderState / Texture / WebGLCustomLayerError |
-| GeoJSONSource 数据源 | ⬜ | 与 GeoJSONLayer 的 dataSource 入参的关系待确认后定实现形态 |
+| DeckglLayer deck.gl 接入 | ✅ | 依赖宿主自备 deck.gl（挂到 window.deck）；组件+driver+能力矩阵+文档已落地（v1.0.6） |
+| ThreejsLayer three.js 接入 | ✅ | 依赖宿主自备 three.js（挂到 window.THREE）；与已实现的 ThreeLayer 是不同类；组件+driver+能力矩阵+文档已落地（v1.0.6） |
+| WebGLCustomLayer 自定义着色器 | ✅ | 含 Attribute / BlendFunc / Draw / RenderState / Texture / WebGLCustomLayerError；组件+driver+能力矩阵+文档已落地（v1.0.6） |
+| GeoJSONSource 数据源 | ✅ | 静态工具类（normalize / replaceGeometry / extractPoints / toLineStrings / toPolygons），不建组件；组件+driver+能力矩阵+文档已落地（v1.0.6） |
 
 ## P1 · 服务类
 
 | 项 | 状态 | 备注 |
 |---|---|---|
-| EBikeRoute 电动车路线 | ⬜ | 4.0 新增，用法同 RidingRoute（支持途经点）；需 useEBikeRoute composable + driver createEBikeRoute + BMAP_EBike* 常量（若有） |
+| EBikeRoute 电动车路线 | ✅ | useEBikeRoute composable + driver createEBikeRoute + 能力矩阵已落地（v1.0.6） |
 
 ## P2 · 图层类 / 类型级
 
 | 项 | 状态 | 备注 |
 |---|---|---|
-| Entity 实体图层 | ⬜ | capabilityMatrix 已声明能力名，缺组件 + driver 工厂 |
-| MapLabel / MapLabelStyle | ⬜ | 目前只有类型 + MapRef.addMapLabels；缺类/常量/组件（低优先级） |
-| StyleExpress 样式表达式 | ⬜ | 供 FillLayerStyle / LineLayerStyle 引用（低优先级） |
-| ParkingSpot 停车位 | ⬜ | MapRef 已有 add/removeParkingSpot，缺类/类型/组件（低优先级） |
+| Entity 实体图层 | ✅ | driver createEntity + 能力矩阵已落地，数据对象不建组件 |
+| MapLabel / MapLabelStyle | ✅ | MapLabel 类型 + MapRef.addMapLabels；MapLabelStyle 类型已补（v1.0.6） |
+| StyleExpress 样式表达式 | ✅ | 泛型类型 StyleExpress<T> 已导出（v1.0.6）；Fill/Line 图层沿用各自的 FillStyleExpr/LineStyleExpr 表达式数组 |
+| ParkingSpot 停车位 | ✅ | ParkingSpotOptions 类型已补（v1.0.6）；MapRef 已有 add/removeParkingSpot |
 
 ## P3 · 类型 / 常量级
 
 | 项 | 状态 | 备注 |
 |---|---|---|
-| 事件映射类型 | ⬜ | TrackLineEventMap / ViewAnimationEventMap / VisualPickEvent / GraphEventMap / GraphVertexEvent / GraphEditEvent / NormalLayerPickEvent / MVTLayerPickEvent 等 4.0 新增事件类型 |
-| Truck 路线专属结果类型 | ⬜ | TruckRouteResult / TruckRouteLine / TruckRoutePlan / TruckTrafficCondition（当前用 DrivingRouteResult 顶替） |
-| LocalSearchSearchOption | ⬜ | 4.0 LocalSearch 新配置项类型 |
-| Icons 常量组 | ⬜ | BMAP_ICON_*（具体枚举名待确认） |
+| 事件映射类型 | ⬜ | TrackLineEventMap / ViewAnimationEventMap / VisualPickEvent / GraphEventMap / GraphVertexEvent / GraphEditEvent / NormalLayerPickEvent / MVTLayerPickEvent 等 4.0 新增事件类型（类型级，可后续随 dts 对齐补） |
+| Truck 路线专属结果类型 | ✅ | TruckRouteResult / TruckRouteLine / TruckRoutePlan / TruckTrafficCondition 已补（v1.0.6） |
+| LocalSearchSearchOption | ✅ | 已补并导出（v1.0.6） |
+| Icons 常量组 | ⬜ | SDK 的 Icons 是内部 SVG 图标对象（LOCATION/PLUS/MINUS/箭头等），非公开 BMAP_* 常量，不建议导出（保留） |
 
 ---
 

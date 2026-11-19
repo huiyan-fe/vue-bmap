@@ -60,6 +60,9 @@ export {
   PointShapeLayer, PointIconLayer, FillLayer, LineLayer, ThreeLayer,
   HeatmapLayer, ClusterLayer, PointLayer, PolylineLayer, PolygonLayer, TextLayer,
   BarLayer, FlyLineLayer, TrackLine,
+  DeckglLayer, ThreejsLayer, WebGLCustomLayer,
+  // GeoJSONSource：静态工具类包装（不建组件）
+  GeoJSONSource, normalize, replaceGeometry, extractPoints, toLineStrings, toPolygons,
 } from './components/Layer';
 export type {
   TileLayerProps, NormalLayerProps, GeoJSONLayerProps, DistrictLayerProps,
@@ -76,6 +79,11 @@ export type {
   PolygonLayerOptions, PolygonLayerProps, TextLayerOptions, TextLayerProps,
   BarLayerOptions, BarLayerProps, FlyLineLayerOptions, FlyLineLayerProps,
   TrackLineOptions, TrackLineProps, TrackLineRef,
+  DeckglLayerOptions, DeckglLayerProps, DeckglLayerRef,
+  ThreejsLayerContext, ThreejsLayerHook, ThreejsLayerOptions, ThreejsLayerProps, ThreejsLayerRef,
+  WebGLCustomLayerOptions, WebGLCustomLayerProps,
+  WebGLCustomLayerContext, WebGLCustomLayerHook, WebGLCustomLayerRef,
+  GeoJSONSourceFeature, GeoJSONSourcePoints,
 } from './components/Layer';
 
 // ─── 右键菜单 / 全景 ───
@@ -88,7 +96,7 @@ export type { PanoramaProps, PanoramaLabelProps, PanoramaRef, PanoramaPov, Panor
 export {
   useMap, useMapEvent, useMapReady, useDriver, useMapRef, useCapabilities,
   useSymbol, useIcon, useGeocoder, useServiceTimeout,
-  useDrivingRoute, useWalkingRoute, useRidingRoute, useTransitRoute, useTruckRoute,
+  useDrivingRoute, useWalkingRoute, useRidingRoute, useEBikeRoute, useTransitRoute, useTruckRoute,
   useLocalSearch, useAutocomplete, useBusLineSearch, usePlaceDetail,
   useBoundary, useLocalCity, useConvertor, useGeolocation, usePanoramaService,
   useMapStatus, useRawControl, useRawOverlay,
@@ -98,9 +106,10 @@ export type {
   DrivingRouteOptions, DrivingRouteHookResult, DrivingRouteRenderOptions,
   WalkingRouteOptions, WalkingRouteHookResult,
   RidingRouteOptions, RidingRouteHookResult,
+  EBikeRouteOptions, EBikeRouteHookResult,
   TransitRouteOptions, TransitRouteHookResult,
   TruckRouteOptions, TruckRouteHookResult,
-  LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions,
+  LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions, LocalSearchSearchOption,
   AutocompleteOptions, AutocompleteHookResult,
   BusLineSearchOptions, BusLineSearchHookResult,
   PlaceDetailOptions, PlaceDetailHookResult,
@@ -124,5 +133,5 @@ export type {
   MapMouseEvent, MapMoveEvent, MapZoomEvent, MapEvent,
   LoadKeyComponents, LoaderStatus,
 } from './types';
-export type { DisplayOptions } from './types/core';
-export type { GeocoderResult, PanelTarget } from './types/results';
+export type { DisplayOptions, MapLabel, MapLabelStyle, StyleExpress, ParkingSpotOptions } from './types/core';
+export type { GeocoderResult, PanelTarget, TruckRouteResult, TruckRouteLine, TruckRoutePlan, TruckTrafficCondition } from './types/results';

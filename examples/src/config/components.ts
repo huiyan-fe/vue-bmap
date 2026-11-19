@@ -73,6 +73,9 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'bar-layer', name: 'BarLayer', category: 'Layer', description: '柱状图层（4.0+，v1.0.6 新增）' },
   { id: 'fly-line-layer', name: 'FlyLineLayer', category: 'Layer', description: '飞线图层（4.0+，v1.0.6 新增）' },
   { id: 'track-line', name: 'TrackLine', category: 'Layer', description: '轨迹线图层（4.0+，v1.0.6 新增）' },
+  { id: 'deckgl-layer', name: 'DeckglLayer', category: 'Layer', description: 'deck.gl 接入图层（4.0+，deck.gl 需宿主自备并挂到 window.deck，v1.0.6 新增）' },
+  { id: 'threejs-layer', name: 'ThreejsLayer', category: 'Layer', description: 'three.js 接入图层（4.0+，three.js 需宿主自备并挂到 window.THREE，v1.0.6 新增）' },
+  { id: 'webgl-custom-layer', name: 'WebGLCustomLayer', category: 'Layer', description: '自定义着色器图层（4.0+，v1.0.6 新增）' },
 
   // Service
   { id: 'geocoder', name: 'useGeocoder', category: 'Service', description: '地理编码' },
@@ -90,6 +93,7 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'convertor', name: 'useConvertor', category: 'Service', description: '坐标转换（v1.0.2 新增）' },
   { id: 'panorama-service', name: 'usePanoramaService', category: 'Service', description: '全景服务（v1.0.2 新增）' },
   { id: 'truck-route', name: 'useTruckRoute', category: 'Service', description: '货车路线（v1.0.2 新增）' },
+  { id: 'ebike-route', name: 'useEBikeRoute', category: 'Service', description: '电动车路线（4.0+，v1.0.6 新增）' },
 
   // Other
   { id: 'context-menu', name: 'ContextMenu', category: 'Other', description: '右键菜单（v1.0.2 新增）' },

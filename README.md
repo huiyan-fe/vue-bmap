@@ -190,7 +190,7 @@ const map = useMapRef();
 从顶层直接 import，均需在 `<Map>` 内部使用：
 
 - **基础**：`useMap`、`useMapEvent`、`useMapReady`、`useDriver`、`useMapRef`、`useCapabilities`、`useMapStatus`、`useSymbol`、`useIcon`
-- **检索 / 路线**：`useLocalSearch`、`useGeocoder`、`useDrivingRoute`、`useWalkingRoute`、`useRidingRoute`、`useTransitRoute`、`useTruckRoute`、`useBusLineSearch`、`useAutocomplete`、`useBoundary`、`useLocalCity`、`usePlaceDetail`、`useConvertor`、`usePanoramaService`
+- **检索 / 路线**：`useLocalSearch`、`useGeocoder`、`useDrivingRoute`、`useWalkingRoute`、`useRidingRoute`、`useEBikeRoute`、`useTransitRoute`、`useTruckRoute`、`useBusLineSearch`、`useAutocomplete`、`useBoundary`、`useLocalCity`、`usePlaceDetail`、`useConvertor`、`usePanoramaService`
 - **逃生舱**：`useRawControl`、`useRawOverlay`（挂载任意原生 Control / Overlay 实例）
 
 `useCapabilities()` 返回当前地图版本支持的能力集合（响应式），可用于提前分支：
@@ -210,10 +210,10 @@ const caps = useCapabilities();
 - **覆盖物**：`Marker`、`Label`、`Polyline`、`Polygon`、`Circle`、`Rectangle`、`BezierCurve`、`Prism`、`GroundOverlay`、`GroundPoint`、`PointCollection`、`InfoWindow`、`Symbol`、`Icon`、`IconSequence`、`Hotspot`、`Marker3D`、`MapMask`、`SimpleInfoWindow`、`PlaceDetail`、`PlaceDetailPanel`、`CustomOverlay`、`RawOverlay`
 - **控件**：`NavigationControl`、`NavigationControl3D`、`ScaleControl`、`OverviewMapControl`、`MapTypeControl`、`CopyrightControl`、`GeolocationControl`、`PanoramaControl`、`ZoomControl`、`CityListControl`、`LocationControl`、`LogoControl`、`CustomControl`、`RawControl`
 - **图层**：`TileLayer`、`NormalLayer`、`GeoJSONLayer`、`DistrictLayer`、`TrafficLayer`、`CustomLayer`、`CanvasLayer`、`RasterTileLayer`、`WMSLayer`、`WMTSLayer`、`XYZLayer`、`MVTLayer`、`FillLayer`、`DOMLayer`、`LineLayer`、`PointIconLayer`、`PointShapeLayer`、`PanoramaCoverageLayer`、`PixelLayer`、`BaiduLayer`、`FeatureLayer`、`ThreeLayer`
-- **数据可视化图层（4.0+）**：`HeatmapLayer`（热力图）、`ClusterLayer`（点聚合）、`PointLayer`（点）、`PolylineLayer`（线）、`PolygonLayer`（面）、`TextLayer`（文本）、`BarLayer`（柱状）、`FlyLineLayer`（飞线）、`TrackLine`（轨迹，含播放控制 ref）
+- **数据可视化图层（4.0+）**：`HeatmapLayer`（热力图）、`ClusterLayer`（点聚合）、`PointLayer`（点）、`PolylineLayer`（线）、`PolygonLayer`（面）、`TextLayer`（文本）、`BarLayer`（柱状）、`FlyLineLayer`（飞线）、`TrackLine`（轨迹，含播放控制 ref）、`WebGLCustomLayer`（自定义着色器）、`DeckglLayer`（deck.gl 接入，宿主自备 deck.gl）、`ThreejsLayer`（three.js 接入，宿主自备 three.js）
 - **其它**：`ContextMenu` / `MenuItem`（右键菜单）、`Panorama` / `PanoramaLabel`（全景）
 
-> 部分组件只在 4.0（WebGL）下可用（如 `Prism`、`Marker3D`、`DistrictLayer`、以及数据可视化图层 `HeatmapLayer` / `ClusterLayer` / `PointLayer` / `PolylineLayer` / `PolygonLayer` / `TextLayer` / `BarLayer` / `FlyLineLayer` / `TrackLine`）。在不支持的版本使用时，默认会打印一条警告并跳过，不会让页面崩溃。
+> 部分组件只在 4.0（WebGL）下可用（如 `Prism`、`Marker3D`、`DistrictLayer`、以及数据可视化图层 `HeatmapLayer` / `ClusterLayer` / `PointLayer` / `PolylineLayer` / `PolygonLayer` / `TextLayer` / `BarLayer` / `FlyLineLayer` / `TrackLine` / `WebGLCustomLayer` / `DeckglLayer` / `ThreejsLayer`）。在不支持的版本使用时，默认会打印一条警告并跳过，不会让页面崩溃。
 
 ## 命名约定与冲突处理
 

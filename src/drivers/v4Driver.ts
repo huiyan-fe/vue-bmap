@@ -658,11 +658,31 @@ export function createV4Driver(
     // ─────────────── 15. 图层 ───────────────
     addLayer: (map, l) => {
       if (isOverlayLikeLayer(l)) { callRaw('Map.addOverlay', () => rawMap(map).addOverlay(rawOf(l))); return; }
-      callRaw('Map.addLayer', () => rawMap(map).addLayer(unwrapTileWrapper(rawOf(l))));
+      const raw = rawMap(map);
+      const rawLayer = unwrapTileWrapper(rawOf(l));
+      // 正常 4.0 走 addLayer；若拿到的原生 Map 实例没有 addLayer（版本错配 / 被代理的实例），
+      // 退回 3.0 风格的 addTileLayer / addOverlay，避免把「成员不存在」误报成能力不支持。
+      if (typeof raw?.addLayer === 'function') {
+        callRaw('Map.addLayer', () => raw.addLayer(rawLayer));
+        return;
+      }
+      callRaw('Map.addLayer', () => {
+        if (typeof raw?.addTileLayer === 'function') raw.addTileLayer(rawLayer);
+        else if (typeof raw?.addOverlay === 'function') raw.addOverlay(rawLayer);
+      });
     },
     removeLayer: (map, l) => {
       if (isOverlayLikeLayer(l)) { callRaw('Map.removeOverlay', () => rawMap(map).removeOverlay(rawOf(l))); return; }
-      callRaw('Map.removeLayer', () => rawMap(map).removeLayer(unwrapTileWrapper(rawOf(l))));
+      const raw = rawMap(map);
+      const rawLayer = unwrapTileWrapper(rawOf(l));
+      if (typeof raw?.removeLayer === 'function') {
+        callRaw('Map.removeLayer', () => raw.removeLayer(rawLayer));
+        return;
+      }
+      callRaw('Map.removeLayer', () => {
+        if (typeof raw?.removeTileLayer === 'function') raw.removeTileLayer(rawLayer);
+        else if (typeof raw?.removeOverlay === 'function') raw.removeOverlay(rawLayer);
+      });
     },
     addTileLayer: (map, l) => callRaw('Map.addTileLayer', () => rawMap(map).addTileLayer(rawOf(l))),
     removeTileLayer: (map, l) => callRaw('Map.removeTileLayer', () => rawMap(map).removeTileLayer(rawOf(l))),
@@ -1421,6 +1441,22 @@ export function createV4Driver(
     createBarLayer: (o) => createLayerFactory('BarLayer', () => new rawSDK.BarLayer(o), 'custom'),
     createFlyLineLayer: (o) => createLayerFactory('FlyLineLayer', () => new rawSDK.FlyLineLayer(o), 'custom'),
     createTrackLine: (o) => createLayerFactory('TrackLine', () => new rawSDK.TrackLine(o), 'custom'),
+    // 外部库接入图层（4.0+ Visualization：deck.gl / three.js / 自写 WebGL）
+    createDeckglLayer: (o) => createLayerFactory('DeckglLayer', () => new rawSDK.DeckglLayer(o), 'custom'),
+    createThreejsLayer: (o) => createLayerFactory('ThreejsLayer', () => new rawSDK.ThreejsLayer(o), 'custom'),
+    createWebGLCustomLayer: (o) => createLayerFactory('WebGLCustomLayer', () => new rawSDK.WebGLCustomLayer(o), 'custom'),
+
+    // 数据实体（4.0+）：MVTLayer 等图层的数据单元，不是图层/覆盖物；kind 不适用，
+    // 复用 OverlayHandle 形态（{__brand, raw}）承载。SDK 全局没有 Entity 时返回 null 并告警。
+    createEntity: (id, layerName, properties) => {
+      if (typeof rawSDK.Entity !== 'function') { debugWarn('Entity'); return null; }
+      try {
+        const entity = new rawSDK.Entity(id, layerName);
+        if (properties !== undefined) entity.properties = properties;
+        return overlayHandle(entity, 'entity');
+      }
+      catch (e) { reportCallFailure('Entity', version, behavior, e); return null; }
+    },
 
     // ─────────────── 30. ContextMenu ───────────────
     createContextMenu: (o) => createOverlayFactory('ContextMenu', () => new rawSDK.ContextMenu(o), 'contextMenu'),
@@ -1452,6 +1488,7 @@ export function createV4Driver(
     createDrivingRoute: (o) => createServiceFactory('DrivingRoute', () => new rawSDK.DrivingRoute((o as any)?.location, o)),
     createWalkingRoute: (o) => createServiceFactory('WalkingRoute', () => new rawSDK.WalkingRoute((o as any)?.location, o)),
     createRidingRoute: (o) => createServiceFactory('RidingRoute', () => new rawSDK.RidingRoute((o as any)?.location, o)),
+    createEBikeRoute: (o) => createServiceFactory('EBikeRoute', () => new rawSDK.EBikeRoute((o as any)?.location, o)),
     createTransitRoute: (o) => createServiceFactory('TransitRoute', () => new rawSDK.TransitRoute((o as any)?.location, o)),
     createBusLineSearch: (o) => createServiceFactory('BusLineSearch', () => new rawSDK.BusLineSearch((o as any)?.location, o)),
     createAutocomplete: (o) => createServiceFactory('Autocomplete', () => new rawSDK.Autocomplete(o)),

@@ -1,7 +1,7 @@
 import { defineComponent, h, onMounted, reactive, ref } from 'vue';
 import {
   useLocalSearch, useGeocoder, useDrivingRoute, useWalkingRoute,
-  useRidingRoute, useTransitRoute, useBusLineSearch, useAutocomplete,
+  useRidingRoute, useEBikeRoute, useTransitRoute, useBusLineSearch, useAutocomplete,
   useBoundary, useGeolocation, useLocalCity, usePlaceDetail,
   useConvertor, usePanoramaService, useTruckRoute,
 } from '@baidumap/vue-bmap';
@@ -462,5 +462,25 @@ const { search } = useTruckRoute({
   renderOptions: { panel: 'r-result', autoViewport: true }, // 容器 id（<div id="r-result" />）；也可传元素，见 useLocalSearch 示例
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.501, lat: 39.937 });
+<\/script>`,
+});
+
+// ─── useEBikeRoute（v1.0.6 新增） ───
+registerDemo('ebike-route', {
+  component: defineComponent({
+    setup: () => () => h(MapContainer, { center: C, zoom: 11 }, {
+      default: () => [h(makeRouteButtonInner(useEBikeRoute, '116.404,39.915', '116.45,39.93', '电动车：天安门 → 朝阳门', '#13c2c2'))],
+    }),
+  }),
+  code: `<script setup>
+// （v1.0.6 新增，4.0+）
+import { useEBikeRoute } from '@baidumap/vue-bmap';
+// 在 setup() 中调用（组件须在 <BMapProvider> 后代内）；renderOptions 不用传 map，hook 自动取当前地图
+// EBikeRoute 与 RidingRoute 同构：SDK 请求走 qt=drct_riding（riding_type=1 区分电动车），方法 / 返回结构与骑行一致
+const { search } = useEBikeRoute({
+  location: '北京',
+  renderOptions: { panel: 'r-result', autoViewport: true }, // 容器 id（<div id="r-result" />）；也可传元素，见 useLocalSearch 示例
+});
+search({ lng: 116.404, lat: 39.915 }, { lng: 116.45, lat: 39.93 });
 <\/script>`,
 });

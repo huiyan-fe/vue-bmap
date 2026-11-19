@@ -21,6 +21,31 @@ export interface DrivingRouteResult { policy?: number; taxiFare?: TaxiFare; getN
 export type WalkingRouteResult = DrivingRouteResult;
 export type RidingRouteResult = DrivingRouteResult;
 
+// ─── Truck（货车路线专属结果，JSAPI TruckRouteResult 系列） ───
+export interface TruckTrafficCondition { status: number; geo_cnt: number; distance: number; }
+export interface TruckRouteLine {
+  getDistance(): { value: number };
+  getDuration(): { value: number };
+  getNumSteps(): number;
+  getStep(i: number): Step;
+  getPath(): Point[];
+}
+export interface TruckRoutePlan {
+  getNumRoutes(): number;
+  getRoute(i: number): TruckRouteLine;
+  getDistance(): { value: number };
+  getDuration(): { value: number };
+  /** 过路费（分） */
+  getTolls(): { value: number };
+  /** 限行/路况提示 */
+  getRestriction?: () => string;
+}
+export interface TruckRouteResult {
+  policy?: number;
+  getNumPlans(): number;
+  getPlan(i: number): TruckRoutePlan;
+}
+
 // ─── TransitRoute ───
 export interface TransitLine { title: string; getNumStops?(): number; }
 export interface TransitPlan { getNumLines(): number; getLine(i: number): TransitLine; getDistance(includeTraffic?: boolean): { value: number; }; getDuration(includeTraffic?: boolean): { value: number; }; }

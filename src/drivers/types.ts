@@ -330,6 +330,11 @@ export interface BMapDriver {
   createIconSequence(symbol?: OverlayHandle, offset?: unknown, repeat?: string, fixedRotation?: boolean): OverlayHandle | null;
   createHotspot(position: Point, options?: unknown): OverlayHandle | null;
   createCustomOverlay(domCreate?: Function, options?: unknown): OverlayHandle | null;
+  /**
+   * 数据实体（4.0+）：MVTLayer 等图层的数据单元，非覆盖物。kind 不适用，
+   * 复用 OverlayHandle 形态（{__brand, raw}）。SDK 全局无 Entity 时返回 null。
+   */
+  createEntity(id: string, layerName: string, properties?: unknown): OverlayHandle | null;
 
   // ─────────────── 27. Overlay 属性 setter ───────────────
   setOverlayPosition(overlay: OverlayHandle, position: Point): void;
@@ -407,6 +412,9 @@ export interface BMapDriver {
   createBarLayer(options?: unknown): LayerHandle | null;
   createFlyLineLayer(options?: unknown): LayerHandle | null;
   createTrackLine(options?: unknown): LayerHandle | null;
+  createDeckglLayer(options?: unknown): LayerHandle | null;
+  createThreejsLayer(options?: unknown): LayerHandle | null;
+  createWebGLCustomLayer(options?: unknown): LayerHandle | null;
 
   // ─────────────── 30. ContextMenu 工厂 ───────────────
   createContextMenu(options?: unknown): OverlayHandle | null;
@@ -425,6 +433,7 @@ export interface BMapDriver {
   createDrivingRoute(options?: unknown): ServiceHandle;
   createWalkingRoute(options?: unknown): ServiceHandle;
   createRidingRoute(options?: unknown): ServiceHandle;
+  createEBikeRoute(options?: unknown): ServiceHandle;
   createTransitRoute(options?: unknown): ServiceHandle;
   createBusLineSearch(options?: unknown): ServiceHandle;
   createAutocomplete(options?: unknown): ServiceHandle;

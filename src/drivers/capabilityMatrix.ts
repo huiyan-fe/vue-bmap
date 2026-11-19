@@ -33,6 +33,8 @@ const V4_LAYER_CLASS: Capability[] = [
   'Heatmap', 'HeatmapLayer', 'ClusterLayer',
   'PointLayer', 'PolylineLayer', 'PolygonLayer', 'TextLayer',
   'BarLayer', 'FlyLineLayer', 'TrackLine',
+  // 外部库接入图层（deck.gl / three.js / 自写 WebGL）与 GeoJSON 归一化静态工具
+  'DeckglLayer', 'ThreejsLayer', 'WebGLCustomLayer', 'GeoJSONSource',
 ];
 
 // ── 4.0+ Map 图层方法 ──
@@ -56,7 +58,7 @@ const V4_CONTROL: Capability[] = [
 
 // ── 4.0+ 服务类 ──
 const V4_SERVICE: Capability[] = [
-  'PlaceDetail', 'PlaceDetailPanel',
+  'PlaceDetail', 'PlaceDetailPanel', 'EBikeRoute',
 ];
 
 // ── 4.0+ 其他公开类（SDK publicListForMap.js 导出、react-bmap 暂未封装） ──

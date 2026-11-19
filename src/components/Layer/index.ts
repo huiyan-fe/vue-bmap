@@ -110,3 +110,23 @@ export { FlyLineLayer } from './FlyLineLayer';
 export type { FlyLineLayerOptions, FlyLineLayerProps } from './FlyLineLayer';
 export { TrackLine } from './TrackLine';
 export type { TrackLineOptions, TrackLineProps, TrackLineRef } from './TrackLine';
+
+// ─── 外部库接入图层（4.0+ Visualization） ───
+export { DeckglLayer } from './DeckglLayer';
+export type { DeckglLayerOptions, DeckglLayerProps, DeckglLayerRef } from './DeckglLayer';
+export { ThreejsLayer } from './ThreejsLayer';
+export type {
+  // 注：ThreeObject 与 ThreeLayer 同名同义（均为 any），已由上方 ThreeLayer 导出，这里不重复导出
+  ThreejsLayerContext, ThreejsLayerHook,
+  ThreejsLayerOptions, ThreejsLayerProps, ThreejsLayerRef,
+} from './ThreejsLayer';
+export { WebGLCustomLayer } from './WebGLCustomLayer';
+export type {
+  WebGLCustomLayerOptions, WebGLCustomLayerProps,
+  WebGLCustomLayerContext, WebGLCustomLayerHook, WebGLCustomLayerRef,
+} from './WebGLCustomLayer';
+// GeoJSONSource：静态工具类（无组件形态），包装为 plain object 从 utils 再导出
+export {
+  GeoJSONSource, normalize, replaceGeometry, extractPoints, toLineStrings, toPolygons,
+} from '../../utils/geojsonSource';
+export type { GeoJSONSourceFeature, GeoJSONSourcePoints } from '../../utils/geojsonSource';

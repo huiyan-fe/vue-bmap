@@ -6,6 +6,7 @@ import {
   ThreeLayer,
   HeatmapLayer, ClusterLayer,
   BarLayer, FlyLineLayer, TrackLine,
+  DeckglLayer, ThreejsLayer, WebGLCustomLayer,
 } from '@baidumap/vue-bmap';
 import type { ThreeLayerRef } from '@baidumap/vue-bmap';
 import { MapContainer } from '../components/MapContainer';
@@ -616,6 +617,8 @@ registerDemo('text-layer', {
     setup: () => () => h(MapContainer, { center: C, zoom: 12 }, {
       default: () => [h(TextLayer as any, {
         data: randomPointsData(150, false),
+        // TextLayer 默认读 properties.text；示例数据里文案在 name 上，用函数取
+        text: (p: any) => p.name,
         fontSize: 14,
         color: '#1890ff',
         strokeColor: '#ffffff',
@@ -626,7 +629,8 @@ registerDemo('text-layer', {
       })],
     }),
   }),
-  code: `<!-- TextLayer（v1.0.6 新增）：文本图层，文本内容取 data 中 feature 的 properties.name（或 text） -->
+  code: `<!-- TextLayer（v1.0.6 新增）：文本图层。text 可传字符串或 (properties, feature, index) => string；
+     不传时默认读 properties.text（示例数据文案在 name 上，因此用函数取） -->
 <script setup>
 import { Map, TextLayer } from '@baidumap/vue-bmap';
 const data = { type: 'FeatureCollection', features: Array.from({ length: 150 }, (_, i) => ({
@@ -637,7 +641,7 @@ const data = { type: 'FeatureCollection', features: Array.from({ length: 150 }, 
 <\/script>
 <template>
   <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="12">
-    <TextLayer :data="data" :font-size="14" color="#1890ff"
+    <TextLayer :data="data" :text="(p) => p.name" :font-size="14" color="#1890ff"
       stroke-color="#ffffff" :stroke-weight="2" font-weight="bold"
       :collides="true" :wait-time="100" />
   </Map>
@@ -809,6 +813,266 @@ const onProgress = (e) => console.log('progress', e.value?.process);
     <button @click="pause">暂停</button>
     <button @click="stop">停止</button>
   </div>
+</template>`,
+});
+
+// ─── DeckglLayer deck.gl 接入图层（v1.0.6 新增） ───
+registerDemo('deckgl-layer', {
+  component: defineComponent({
+    name: 'DeckglLayerDemo',
+    setup() {
+      // deck.gl 由宿主工程引入并挂到全局 window.deck（组件不 import deck，SDK 直接读 window.deck.Deck）。
+      // 示例站为了开箱即用，缺失时自动从 CDN 加载 8.9.x 全量包（8.9.x 是 SDK 支持的最高版本）。
+      const deckReady = ref(false);
+      const error = ref('');
+      const DECK_CDN = 'https://unpkg.com/deck.gl@8.9.36/dist.min.js';
+      const loadDeck = () => new Promise<void>((resolve, reject) => {
+        if ((globalThis as any).deck?.Deck) { resolve(); return; }
+        const s = document.createElement('script');
+        s.src = DECK_CDN;
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error(`CDN 加载失败：${DECK_CDN}`));
+        document.head.appendChild(s);
+      });
+
+      const buildData = (deck: any) => {
+        // 随机 50 个点，围绕天安门
+        const points = Array.from({ length: 50 }, (_, i) => ({
+          id: i,
+          lng: C.lng + (Math.random() - 0.5) * 0.14,
+          lat: C.lat + (Math.random() - 0.5) * 0.09,
+          radius: 40 + Math.random() * 60,
+          color: [24 + Math.floor(Math.random() * 200), 90, 255],
+        }));
+        // data 即 deck props（开放集合）：最常用 { layers }；变化走 raw.setProps()，不重建 Deck 实例
+        return {
+          layers: [new deck.ScatterplotLayer({
+            id: 'demo-scatter',
+            data: points,
+            getPosition: (d: any) => [d.lng, d.lat],
+            getRadius: (d: any) => d.radius,
+            getFillColor: (d: any) => d.color,
+            stroked: true,
+            getLineColor: [255, 255, 255],
+            lineWidthMinPixels: 1,
+            radiusMinPixels: 2,
+            radiusMaxPixels: 60,
+          })],
+        };
+      };
+
+      onMounted(async () => {
+        try { await loadDeck(); deckReady.value = true; }
+        catch (e) { error.value = (e as Error).message; }
+      });
+
+      return () => {
+        if (error.value) return hint(`deck.gl 加载失败：${error.value}。请宿主引入 8.9.x 全量包并挂到 window.deck。`);
+        if (!deckReady.value) return hint('正在加载 deck.gl（8.9.36 CDN）…');
+        const deck = (globalThis as any).deck;
+        return h(MapContainer, { center: C, zoom: 12 }, {
+          default: () => [h(DeckglLayer as any, { animation: true, data: buildData(deck) })],
+        });
+      };
+    },
+  }),
+  code: `<!-- DeckglLayer（v1.0.6 新增）：deck.gl 接入图层。deck.gl 需宿主引入 8.9.x 全量包并挂到 window.deck（9.x 不支持地图共享 GL 上下文；本组件不 import deck） -->
+<script setup>
+import { Map, DeckglLayer } from '@baidumap/vue-bmap';
+import * as deck from 'deck.gl';      // 或引 8.9.x 全量 dist 包，确保挂到 window.deck
+window.deck = deck;
+
+const center = { lng: 116.404, lat: 39.915 };
+
+// 随机 50 个点，围绕天安门
+const points = Array.from({ length: 50 }, (_, i) => ({
+  id: i,
+  lng: center.lng + (Math.random() - 0.5) * 0.14,
+  lat: center.lat + (Math.random() - 0.5) * 0.09,
+  radius: 40 + Math.random() * 60,
+  color: [24 + Math.floor(Math.random() * 200), 90, 255],
+}));
+
+// data 即 deck props（开放集合）：最常用 { layers }；变化走 raw.setProps()，不重建 Deck 实例
+const data = {
+  layers: [new deck.ScatterplotLayer({
+    id: 'demo-scatter',
+    data: points,
+    getPosition: (d) => [d.lng, d.lat],
+    getRadius: (d) => d.radius,
+    getFillColor: (d) => d.color,
+    stroked: true,
+    getLineColor: [255, 255, 255],
+    lineWidthMinPixels: 1,
+    radiusMinPixels: 2,
+    radiusMaxPixels: 60,
+  })],
+};
+<\/script>
+<template>
+  <Map :center="center" :zoom="12">
+    <DeckglLayer :data="data" animation />
+  </Map>
+</template>`,
+});
+
+// ─── ThreejsLayer three.js 接入图层（v1.0.6 新增） ───
+registerDemo('threejs-layer', {
+  component: defineComponent({
+    name: 'ThreejsLayerDemo',
+    setup() {
+      // three.js 由宿主工程引入并挂到全局 window.THREE（组件不 import three）。
+      // 示例站为了开箱即用，缺失时自动从 CDN 加载（与 three-layer demo 共用 loadThree）。
+      const ready = ref(!!(window as any).THREE);
+      const error = ref('');
+
+      onMounted(() => {
+        if (ready.value) return;
+        loadThree().then(() => { ready.value = true; }, (e: Error) => { error.value = e.message; });
+      });
+
+      // onInit 的 ctx = { layer, map, renderer, scene, camera, projectToLayer, getTime, getUnitsPerPixel }
+      const onInit = (ctx: any) => {
+        const THREE = (window as any).THREE;
+        const mesh = new THREE.Mesh(
+          new THREE.BoxGeometry(500, 500, 500),
+          new THREE.MeshBasicMaterial({ color: 0x1890ff }),
+        );
+        // projectToLayer：入参必须是 [lng, lat] 数组，返回图层局部坐标（相对 referCenter 的墨卡托米）
+        const [x, y] = ctx.projectToLayer([C.lng, C.lat]);
+        mesh.position.set(x, y, 250); // z 轴朝天，底面贴地
+        ctx.layer.add(mesh);
+      };
+
+      return () => {
+        if (error.value) return hint(`three.js 加载失败：${error.value}`);
+        if (!ready.value) return hint('正在加载 three.js（0.137.5 CDN）…');
+        return h(MapContainer, { center: C, zoom: 16 }, {
+          default: () => [h(ThreejsLayer as any, { antialias: true, zIndex: 5, onInit })],
+        });
+      };
+    },
+  }),
+  code: `<!-- ThreejsLayer（v1.0.6 新增）：three.js 接入图层。three.js 由宿主工程自行引入并挂到全局 window.THREE（本组件不 import three） -->
+<script setup>
+import { Map, ThreejsLayer } from '@baidumap/vue-bmap';
+import * as THREE from 'three';
+window.THREE = THREE;
+
+const center = { lng: 116.404, lat: 39.915 };
+
+// onInit 的 ctx = { layer, map, renderer, scene, camera, projectToLayer, getTime, getUnitsPerPixel }
+// projectToLayer：入参 [lng, lat]，返回图层局部坐标（相对 referCenter 的墨卡托米），即 three 场景里的 x/y
+const onInit = (ctx) => {
+  const mesh = new THREE.Mesh(
+    new THREE.BoxGeometry(500, 500, 500),
+    new THREE.MeshBasicMaterial({ color: 0x1890ff }),
+  );
+  const [x, y] = ctx.projectToLayer([center.lng, center.lat]);
+  mesh.position.set(x, y, 250); // z 轴朝天，底面贴地
+  ctx.layer.add(mesh);
+};
+<\/script>
+<template>
+  <Map :center="center" :zoom="16">
+    <ThreejsLayer antialias :z-index="5" :on-init="onInit" />
+  </Map>
+</template>`,
+});
+
+// ─── WebGLCustomLayer 自定义着色器图层（v1.0.6 新增） ───
+// 点云 shader demo：声明式 attributes（a_pos，type 'lnglat' 自动投影）+ uniforms（u_color），draw POINTS
+const WEBGL_VS = `attribute vec2 a_pos;
+uniform mat4 u_mvpMatrix;
+uniform float u_size;
+uniform float u_pixelRatio;
+uniform float u_time;
+void main() {
+  // 呼吸效果：点大小随 u_time 轻微抖动（animation: true 时 u_time 持续推进）
+  float breathe = 0.85 + 0.15 * sin(u_time * 3.0);
+  gl_Position = u_mvpMatrix * vec4(a_pos, 0.0, 1.0);
+  gl_PointSize = u_size * u_pixelRatio * breathe;
+}`;
+const WEBGL_FS = `precision mediump float;
+uniform vec4 u_color;
+uniform float u_opacity;
+void main() {
+  // 画成实心圆点，边缘柔化
+  vec2 uv = gl_PointCoord - 0.5;
+  float d = length(uv);
+  if (d > 0.5) discard;
+  float alpha = smoothstep(0.5, 0.0, d) * u_color.a * u_opacity;
+  gl_FragColor = vec4(u_color.rgb, alpha);
+}`;
+
+registerDemo('webgl-custom-layer', {
+  component: defineComponent({
+    name: 'WebGLCustomLayerDemo',
+    setup() {
+      // 随机 200 个点（经纬度），attributes 的 type 'lnglat' 由 SDK 按 referCenter 自动投影
+      const points = Array.from({ length: 200 }, () => [
+        C.lng + (Math.random() - 0.5) * 0.14,
+        C.lat + (Math.random() - 0.5) * 0.09,
+      ]);
+      return () => h(MapContainer, { center: C, zoom: 12 }, {
+        default: () => [h(WebGLCustomLayer as any, {
+          vertexShader: WEBGL_VS,
+          fragmentShader: WEBGL_FS,
+          referCenter: C,
+          attributes: { a_pos: { data: points, type: 'lnglat' } },
+          uniforms: { u_color: [0.1, 0.6, 1, 1], u_size: 18 },
+          draw: { mode: 'POINTS' },
+          animation: true,
+        })],
+      });
+    },
+  }),
+  code: `<!-- WebGLCustomLayer（v1.0.6 新增）：自定义着色器图层。顶点用图层局部坐标（相对 referCenter 的墨卡托米），
+     attributes 的 type 'lnglat' 会自动把经纬度投影到局部坐标；SDK 注入内置 uniform：u_mvpMatrix / u_size /
+     u_pixelRatio / u_opacity，animation: true 时 u_time 持续推进 -->
+<script setup>
+import { Map, WebGLCustomLayer } from '@baidumap/vue-bmap';
+
+const center = { lng: 116.404, lat: 39.915 };
+
+const vertexShader = \`
+attribute vec2 a_pos;
+uniform mat4 u_mvpMatrix;
+uniform float u_size;
+uniform float u_pixelRatio;
+uniform float u_time;
+void main() {
+  float breathe = 0.85 + 0.15 * sin(u_time * 3.0);
+  gl_Position = u_mvpMatrix * vec4(a_pos, 0.0, 1.0);
+  gl_PointSize = u_size * u_pixelRatio * breathe;
+}\`;
+
+const fragmentShader = \`
+precision mediump float;
+uniform vec4 u_color;
+uniform float u_opacity;
+void main() {
+  vec2 uv = gl_PointCoord - 0.5;
+  float d = length(uv);
+  if (d > 0.5) discard;
+  float alpha = smoothstep(0.5, 0.0, d) * u_color.a * u_opacity;
+  gl_FragColor = vec4(u_color.rgb, alpha);
+}\`;
+
+// 随机点云（经纬度），type 'lnglat' 由 SDK 按 referCenter 自动投影
+const points = Array.from({ length: 200 }, () => [
+  center.lng + (Math.random() - 0.5) * 0.14,
+  center.lat + (Math.random() - 0.5) * 0.09,
+]);
+<\/script>
+<template>
+  <Map :center="center" :zoom="12">
+    <WebGLCustomLayer :vertex-shader="vertexShader" :fragment-shader="fragmentShader"
+      :refer-center="center"
+      :attributes="{ a_pos: { data: points, type: 'lnglat' } }"
+      :uniforms="{ u_color: [0.1, 0.6, 1, 1], u_size: 18 }"
+      :draw="{ mode: 'POINTS' }" animation />
+  </Map>
 </template>`,
 });
 

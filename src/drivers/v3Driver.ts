@@ -314,6 +314,7 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
 
     // 4.0+ 服务在 v3 不支持（工厂返回 isNull: true）
     createPlaceDetail: () => ({ __brand: 'ServiceHandle' as const, raw: null, isNull: true }),
+    createEBikeRoute: () => { reportUnsupported('EBikeRoute', version, behavior); return { __brand: 'ServiceHandle' as const, raw: null, isNull: true }; },
 
     // 4.0+ 类不存在 → null
     createNavigationControl3D: () => { reportUnsupported('NavigationControl3D', version, behavior); return null; },
@@ -350,6 +351,11 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createBarLayer: () => { reportUnsupported('BarLayer', version, behavior); return null; },
     createFlyLineLayer: () => { reportUnsupported('FlyLineLayer', version, behavior); return null; },
     createTrackLine: () => { reportUnsupported('TrackLine', version, behavior); return null; },
+    createDeckglLayer: () => { reportUnsupported('DeckglLayer', version, behavior); return null; },
+    createThreejsLayer: () => { reportUnsupported('ThreejsLayer', version, behavior); return null; },
+    createWebGLCustomLayer: () => { reportUnsupported('WebGLCustomLayer', version, behavior); return null; },
+    // Entity：数据实体（4.0+，MVTLayer 等图层的数据单元），v3 不存在
+    createEntity: () => { reportUnsupported('Entity', version, behavior); return null; },
     // PanoramaCoverageLayer：v3 SDK 也导出该类（publish.js:81），走 base 的真实实现
     // v3-only 图层在 v3 直接创建（v4 capability 闭包不包含这些类）
     createCustomLayer: (o) => {

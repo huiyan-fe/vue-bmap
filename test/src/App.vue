@@ -70,6 +70,9 @@ import TextLayerPage from './pages/layer/TextLayerPage.vue';
 import BarLayerPage from './pages/layer/BarLayerPage.vue';
 import FlyLineLayerPage from './pages/layer/FlyLineLayerPage.vue';
 import TrackLinePage from './pages/layer/TrackLinePage.vue';
+import DeckglLayerPage from './pages/layer/DeckglLayerPage.vue';
+import ThreejsLayerPage from './pages/layer/ThreejsLayerPage.vue';
+import WebGLCustomLayerPage from './pages/layer/WebGLCustomLayerPage.vue';
 import LocalSearchPage from './pages/service/LocalSearchPage.vue';
 import LocalSearchPanelPage from './pages/service/LocalSearchPanelPage.vue';
 import DrivingRoutePage from './pages/service/DrivingRoutePage.vue';
@@ -85,6 +88,7 @@ import PlaceDetailServicePage from './pages/service/PlaceDetailServicePage.vue';
 import ConvertorPage from './pages/service/ConvertorPage.vue';
 import PanoramaServicePage from './pages/service/PanoramaServicePage.vue';
 import TruckRoutePage from './pages/service/TruckRoutePage.vue';
+import EBikeRoutePage from './pages/service/EBikeRoutePage.vue';
 import ContextMenuTestPage from './pages/ContextMenuTestPage.vue';
 import PanoramaTestPage from './pages/PanoramaTestPage.vue';
 import PlaceDetailPanelPage from './pages/PlaceDetailPanelPage.vue';
@@ -158,6 +162,9 @@ const PAGE_MAP: Record<string, Component> = {
   'bar-layer': BarLayerPage,
   'fly-line-layer': FlyLineLayerPage,
   'track-line': TrackLinePage,
+  'deckgl-layer': DeckglLayerPage,
+  'threejs-layer': ThreejsLayerPage,
+  'webgl-custom-layer': WebGLCustomLayerPage,
   'local-search': LocalSearchPage,
   'local-search-panel': LocalSearchPanelPage,
   'driving-route': DrivingRoutePage,
@@ -173,6 +180,7 @@ const PAGE_MAP: Record<string, Component> = {
   convertor: ConvertorPage,
   'panorama-service': PanoramaServicePage,
   'truck-route': TruckRoutePage,
+  'ebike-route': EBikeRoutePage,
   'context-menu': ContextMenuTestPage,
   panorama: PanoramaTestPage,
   'place-detail-panel': PlaceDetailPanelPage,
