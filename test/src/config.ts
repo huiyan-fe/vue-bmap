@@ -66,6 +66,10 @@ export const PAGES: TestPage[] = [
   { id: 'three-layer', name: 'ThreeLayer', category: L, ready: true },
   { id: 'heatmap-layer', name: 'HeatmapLayer', category: L, ready: true },
   { id: 'cluster-layer', name: 'ClusterLayer', category: L, ready: true },
+  { id: 'point-layer', name: 'PointLayer', category: L, ready: true },
+  { id: 'polyline-layer', name: 'PolylineLayer', category: L, ready: true },
+  { id: 'polygon-layer', name: 'PolygonLayer', category: L, ready: true },
+  { id: 'text-layer', name: 'TextLayer', category: L, ready: true },
   // 服务
   { id: 'local-search', name: 'useLocalSearch', category: S, ready: true },
   { id: 'local-search-panel', name: 'useLocalSearch（panel 时机）', category: S, ready: true },

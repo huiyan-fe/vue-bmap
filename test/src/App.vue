@@ -63,6 +63,10 @@ import BaiduLayerPage from './pages/layer/BaiduLayerPage.vue';
 import ThreeLayerPage from './pages/layer/ThreeLayerPage.vue';
 import HeatmapLayerPage from './pages/layer/HeatmapLayerPage.vue';
 import ClusterLayerPage from './pages/layer/ClusterLayerPage.vue';
+import PointLayerPage from './pages/layer/PointLayerPage.vue';
+import PolylineLayerPage from './pages/layer/PolylineLayerPage.vue';
+import PolygonLayerPage from './pages/layer/PolygonLayerPage.vue';
+import TextLayerPage from './pages/layer/TextLayerPage.vue';
 import LocalSearchPage from './pages/service/LocalSearchPage.vue';
 import LocalSearchPanelPage from './pages/service/LocalSearchPanelPage.vue';
 import DrivingRoutePage from './pages/service/DrivingRoutePage.vue';
@@ -144,6 +148,10 @@ const PAGE_MAP: Record<string, Component> = {
   'three-layer': ThreeLayerPage,
   'heatmap-layer': HeatmapLayerPage,
   'cluster-layer': ClusterLayerPage,
+  'point-layer': PointLayerPage,
+  'polyline-layer': PolylineLayerPage,
+  'polygon-layer': PolygonLayerPage,
+  'text-layer': TextLayerPage,
   'local-search': LocalSearchPage,
   'local-search-panel': LocalSearchPanelPage,
   'driving-route': DrivingRoutePage,

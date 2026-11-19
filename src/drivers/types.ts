@@ -400,6 +400,10 @@ export interface BMapDriver {
   // 数据可视化图层（4.0+ Visualization）
   createHeatmap(options?: unknown): LayerHandle | null;
   createClusterLayer(options?: unknown): LayerHandle | null;
+  createPointLayer(options?: unknown): LayerHandle | null;
+  createPolylineLayer(options?: unknown): LayerHandle | null;
+  createPolygonLayer(options?: unknown): LayerHandle | null;
+  createTextLayer(options?: unknown): LayerHandle | null;
 
   // ─────────────── 30. ContextMenu 工厂 ───────────────
   createContextMenu(options?: unknown): OverlayHandle | null;

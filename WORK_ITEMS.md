@@ -17,10 +17,10 @@
 |---|---|---|
 | Heatmap 热力图 | ✅ | 4.0 已内置为 `BMap.Heatmap`（不再是 BMapLib 插件）；组件+driver+能力矩阵+test 页+文档 已落地（v1.0.4） |
 | ClusterLayer 聚合图层 | ✅ | 含 ClusterChangeValue / ClusterClickValue 事件类型；组件+driver+能力矩阵+test 页+文档 已落地（v1.0.4） |
-| PointLayer 点图层 | ⬜ | 含 PointLayerItem / PointAnchor / PointSource / RenderStage |
-| PolylineLayer 线图层 | ⬜ | 含 PolylineLayerItem / LineStyle |
-| PolygonLayer 面图层 | ⬜ | 含 PolygonLayerItem |
-| TextLayer 文本图层 | ⬜ | 含 TextLayerItem / TextAnchor / PointAnchor |
+| PointLayer 点图层 | ✅ | 含 PointLayerItem / PointAnchor / PointSource / RenderStage；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
+| PolylineLayer 线图层 | ✅ | 含 PolylineLayerItem / LineStyle；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
+| PolygonLayer 面图层 | ✅ | 含 PolygonLayerItem；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
+| TextLayer 文本图层 | ✅ | 含 TextLayerItem / TextAnchor / PointAnchor；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
 | BarLayer 柱状图层 | ⬜ | 含 BarSegmentValue |
 | FlyLineLayer 飞线图层 | ⬜ | 含 FlyLineLayerOptions |
 | TrackLine 轨迹线 | ⬜ | 4.0 新能力，含跟随视角 / 进度事件（TrackLineFollowOptions / TrackLineMovePointOptions / TrackLineEventMap / TrackLineProgressValue / TrackLineStatusValue） |

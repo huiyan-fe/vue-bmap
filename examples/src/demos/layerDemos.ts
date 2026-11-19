@@ -9,6 +9,10 @@ import {
 import type { ThreeLayerRef } from '@baidumap/vue-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
+// PointLayer / PolylineLayer / PolygonLayer / TextLayer 由并行任务实现中（v1.0.6），
+// 尚未从 src/index.ts 导出；先经命名空间取用，组件落地导出后自动生效
+import * as BMapLib from '@baidumap/vue-bmap';
+const { PointLayer, PolylineLayer, PolygonLayer, TextLayer } = BMapLib as any;
 
 const C = { lng: 116.404, lat: 39.915 };
 
@@ -468,6 +472,173 @@ const onClusterClick = (e) => {
 <template>
   <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="11">
     <ClusterLayer :data="data" :cluster-radius="60" :cluster-min-points="2" :on-click="onClusterClick" />
+  </Map>
+</template>`,
+});
+
+// ─── 随机线/面 GeoJSON 生成（v1.0.6 新增） ───
+function randomLinesData(count: number) {
+  const features = Array.from({ length: count }, (_, i) => {
+    const lng0 = 116.34 + Math.random() * 0.14;
+    const lat0 = 39.88 + Math.random() * 0.09;
+    const coordinates = Array.from({ length: 4 }, () => [
+      lng0 + (Math.random() - 0.5) * 0.05,
+      lat0 + (Math.random() - 0.5) * 0.04,
+    ]);
+    return { type: 'Feature' as const, geometry: { type: 'LineString' as const, coordinates }, properties: { id: i, name: `线${i}` } };
+  });
+  return { type: 'FeatureCollection' as const, features };
+}
+
+function randomPolygonsData(count: number) {
+  const features = Array.from({ length: count }, (_, i) => {
+    const lng0 = 116.34 + Math.random() * 0.14;
+    const lat0 = 39.88 + Math.random() * 0.09;
+    const w = 0.015 + Math.random() * 0.025;
+    const h = 0.012 + Math.random() * 0.02;
+    const ring = [
+      [lng0, lat0],
+      [lng0 + w, lat0],
+      [lng0 + w, lat0 + h],
+      [lng0, lat0 + h],
+      [lng0, lat0],
+    ];
+    return { type: 'Feature' as const, geometry: { type: 'Polygon' as const, coordinates: [ring] }, properties: { id: i, name: `区域${i}` } };
+  });
+  return { type: 'FeatureCollection' as const, features };
+}
+
+// ─── PointLayer 点图层（v1.0.6 新增） ───
+registerDemo('point-layer', {
+  component: defineComponent({
+    name: 'PointLayerDemo',
+    setup: () => () => h(MapContainer, { center: C, zoom: 12 }, {
+      default: () => [h(PointLayer as any, {
+        data: randomPointsData(200, false),
+        shape: 'circle',
+        size: 18,
+        fillColor: '#1890ff',
+        fillOpacity: 0.8,
+        strokeColor: '#ffffff',
+        strokeWeight: 2,
+        onClick: (e: any) => { const p = e?.value?.properties; if (p) console.log('点', p.id, p.name); },
+      })],
+    }),
+  }),
+  code: `<!-- PointLayer（v1.0.6 新增）：点图层，data 为 GeoJSON 点数据，支持形状/图标两种渲染方式 -->
+<script setup>
+import { Map, PointLayer } from '@baidumap/vue-bmap';
+const data = { type: 'FeatureCollection', features: Array.from({ length: 200 }, (_, i) => ({
+  type: 'Feature',
+  geometry: { type: 'Point', coordinates: [116.34 + Math.random() * 0.14, 39.88 + Math.random() * 0.09] },
+  properties: { id: i, name: '点' + i },
+})) };
+<\/script>
+<template>
+  <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="12">
+    <PointLayer :data="data" shape="circle" :size="18"
+      fill-color="#1890ff" :fill-opacity="0.8"
+      stroke-color="#ffffff" :stroke-weight="2" />
+  </Map>
+</template>`,
+});
+
+// ─── PolylineLayer 线图层（v1.0.6 新增） ───
+registerDemo('polyline-layer', {
+  component: defineComponent({
+    name: 'PolylineLayerDemo',
+    setup: () => () => h(MapContainer, { center: C, zoom: 12 }, {
+      default: () => [h(PolylineLayer as any, {
+        data: randomLinesData(8),
+        strokeColor: '#3388ff',
+        strokeWeight: 4,
+        strokeOpacity: 0.9,
+        strokeLineCap: 'round',
+        strokeLineJoin: 'round',
+      })],
+    }),
+  }),
+  code: `<!-- PolylineLayer（v1.0.6 新增）：线图层，data 为 GeoJSON 线数据，支持纯色/虚线/纹理线 -->
+<script setup>
+import { Map, PolylineLayer } from '@baidumap/vue-bmap';
+const data = { type: 'FeatureCollection', features: Array.from({ length: 8 }, (_, i) => ({
+  type: 'Feature',
+  geometry: { type: 'LineString', coordinates: [[116.34 + Math.random() * 0.14, 39.88 + Math.random() * 0.09], [116.35 + Math.random() * 0.14, 39.89 + Math.random() * 0.09]] },
+  properties: { id: i, name: '线' + i },
+})) };
+<\/script>
+<template>
+  <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="12">
+    <PolylineLayer :data="data" stroke-color="#3388ff" :stroke-weight="4"
+      :stroke-opacity="0.9" stroke-line-cap="round" stroke-line-join="round" />
+  </Map>
+</template>`,
+});
+
+// ─── PolygonLayer 面图层（v1.0.6 新增） ───
+registerDemo('polygon-layer', {
+  component: defineComponent({
+    name: 'PolygonLayerDemo',
+    setup: () => () => h(MapContainer, { center: C, zoom: 12 }, {
+      default: () => [h(PolygonLayer as any, {
+        data: randomPolygonsData(6),
+        fillColor: '#1890ff',
+        fillOpacity: 0.25,
+        strokeColor: '#096dd9',
+        strokeWeight: 2,
+        strokeOpacity: 0.9,
+      })],
+    }),
+  }),
+  code: `<!-- PolygonLayer（v1.0.6 新增）：面图层，data 为 GeoJSON 面数据，支持纯色/纹理填充 -->
+<script setup>
+import { Map, PolygonLayer } from '@baidumap/vue-bmap';
+const data = { type: 'FeatureCollection', features: Array.from({ length: 6 }, (_, i) => {
+  const lng = 116.34 + Math.random() * 0.14;
+  const lat = 39.88 + Math.random() * 0.09;
+  const ring = [[lng, lat], [lng + 0.03, lat], [lng + 0.03, lat + 0.02], [lng, lat + 0.02], [lng, lat]];
+  return { type: 'Feature', geometry: { type: 'Polygon', coordinates: [ring] }, properties: { id: i, name: '区域' + i } };
+}) };
+<\/script>
+<template>
+  <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="12">
+    <PolygonLayer :data="data" fill-color="#1890ff" :fill-opacity="0.25"
+      stroke-color="#096dd9" :stroke-weight="2" :stroke-opacity="0.9" />
+  </Map>
+</template>`,
+});
+
+// ─── TextLayer 文本图层（v1.0.6 新增） ───
+registerDemo('text-layer', {
+  component: defineComponent({
+    name: 'TextLayerDemo',
+    setup: () => () => h(MapContainer, { center: C, zoom: 12 }, {
+      default: () => [h(TextLayer as any, {
+        data: randomPointsData(150, false),
+        fontSize: 14,
+        color: '#1890ff',
+        strokeColor: '#ffffff',
+        strokeWeight: 2,
+        fontWeight: 'bold',
+        collides: true,
+        waitTime: 100,
+      })],
+    }),
+  }),
+  code: `<!-- TextLayer（v1.0.6 新增）：文本图层，文本内容取 data 中 feature 的 properties.name（或 text） -->
+<script setup>
+import { Map, TextLayer } from '@baidumap/vue-bmap';
+const data = { type: 'FeatureCollection', features: Array.from({ length: 150 }, (_, i) => ({
+  type: 'Feature',
+  geometry: { type: 'Point', coordinates: [116.34 + Math.random() * 0.14, 39.88 + Math.random() * 0.09] },
+  properties: { id: i, name: 'POI' + i },
+})) };
+<\/script>
+<template>
+  <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="12">
+    <TextLayer :data="data" :font-size="14" color="#1890ff"
+      stroke-color="#ffffff" :stroke-weight="2" font-weight="bold"
+      :collides="true" :wait-time="100" />
   </Map>
 </template>`,
 });

@@ -1413,6 +1413,10 @@ export function createV4Driver(
     // 数据可视化图层（4.0+ Visualization）
     createHeatmap: (o) => createLayerFactory('HeatmapLayer', () => new rawSDK.Heatmap(o), 'custom'),
     createClusterLayer: (o) => createLayerFactory('ClusterLayer', () => new rawSDK.ClusterLayer(o), 'custom'),
+    createPointLayer: (o) => createLayerFactory('PointLayer', () => new rawSDK.PointLayer(o), 'custom'),
+    createPolylineLayer: (o) => createLayerFactory('PolylineLayer', () => new rawSDK.PolylineLayer(o), 'custom'),
+    createPolygonLayer: (o) => createLayerFactory('PolygonLayer', () => new rawSDK.PolygonLayer(o), 'custom'),
+    createTextLayer: (o) => createLayerFactory('TextLayer', () => new rawSDK.TextLayer(o), 'custom'),
 
     // ─────────────── 30. ContextMenu ───────────────
     createContextMenu: (o) => createOverlayFactory('ContextMenu', () => new rawSDK.ContextMenu(o), 'contextMenu'),
