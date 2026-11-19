@@ -404,6 +404,9 @@ export interface BMapDriver {
   createPolylineLayer(options?: unknown): LayerHandle | null;
   createPolygonLayer(options?: unknown): LayerHandle | null;
   createTextLayer(options?: unknown): LayerHandle | null;
+  createBarLayer(options?: unknown): LayerHandle | null;
+  createFlyLineLayer(options?: unknown): LayerHandle | null;
+  createTrackLine(options?: unknown): LayerHandle | null;
 
   // ─────────────── 30. ContextMenu 工厂 ───────────────
   createContextMenu(options?: unknown): OverlayHandle | null;

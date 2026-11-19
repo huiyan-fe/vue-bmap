@@ -70,6 +70,9 @@ export const PAGES: TestPage[] = [
   { id: 'polyline-layer', name: 'PolylineLayer', category: L, ready: true },
   { id: 'polygon-layer', name: 'PolygonLayer', category: L, ready: true },
   { id: 'text-layer', name: 'TextLayer', category: L, ready: true },
+  { id: 'bar-layer', name: 'BarLayer', category: L, ready: true },
+  { id: 'fly-line-layer', name: 'FlyLineLayer', category: L, ready: true },
+  { id: 'track-line', name: 'TrackLine', category: L, ready: true },
   // 服务
   { id: 'local-search', name: 'useLocalSearch', category: S, ready: true },
   { id: 'local-search-panel', name: 'useLocalSearch（panel 时机）', category: S, ready: true },

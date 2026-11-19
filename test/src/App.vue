@@ -67,6 +67,9 @@ import PointLayerPage from './pages/layer/PointLayerPage.vue';
 import PolylineLayerPage from './pages/layer/PolylineLayerPage.vue';
 import PolygonLayerPage from './pages/layer/PolygonLayerPage.vue';
 import TextLayerPage from './pages/layer/TextLayerPage.vue';
+import BarLayerPage from './pages/layer/BarLayerPage.vue';
+import FlyLineLayerPage from './pages/layer/FlyLineLayerPage.vue';
+import TrackLinePage from './pages/layer/TrackLinePage.vue';
 import LocalSearchPage from './pages/service/LocalSearchPage.vue';
 import LocalSearchPanelPage from './pages/service/LocalSearchPanelPage.vue';
 import DrivingRoutePage from './pages/service/DrivingRoutePage.vue';
@@ -152,6 +155,9 @@ const PAGE_MAP: Record<string, Component> = {
   'polyline-layer': PolylineLayerPage,
   'polygon-layer': PolygonLayerPage,
   'text-layer': TextLayerPage,
+  'bar-layer': BarLayerPage,
+  'fly-line-layer': FlyLineLayerPage,
+  'track-line': TrackLinePage,
   'local-search': LocalSearchPage,
   'local-search-panel': LocalSearchPanelPage,
   'driving-route': DrivingRoutePage,

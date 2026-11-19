@@ -21,9 +21,9 @@
 | PolylineLayer 线图层 | ✅ | 含 PolylineLayerItem / LineStyle；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
 | PolygonLayer 面图层 | ✅ | 含 PolygonLayerItem；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
 | TextLayer 文本图层 | ✅ | 含 TextLayerItem / TextAnchor / PointAnchor；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
-| BarLayer 柱状图层 | ⬜ | 含 BarSegmentValue |
-| FlyLineLayer 飞线图层 | ⬜ | 含 FlyLineLayerOptions |
-| TrackLine 轨迹线 | ⬜ | 4.0 新能力，含跟随视角 / 进度事件（TrackLineFollowOptions / TrackLineMovePointOptions / TrackLineEventMap / TrackLineProgressValue / TrackLineStatusValue） |
+| BarLayer 柱状图层 | ✅ | 含 BarSegmentValue；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
+| FlyLineLayer 飞线图层 | ✅ | 含 FlyLineLayerOptions；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
+| TrackLine 轨迹线 | ✅ | 4.0 新能力，含跟随视角 / 进度事件（TrackLineFollowOptions / TrackLineMovePointOptions / TrackLineEventMap / TrackLineProgressValue / TrackLineStatusValue）；组件+driver+能力矩阵+test 页+文档+demo 已落地（v1.0.6） |
 | DeckglLayer deck.gl 接入 | ⬜ | 依赖宿主自备 deck.gl；含 DeckglLayerError |
 | ThreejsLayer three.js 接入 | ⬜ | 依赖宿主自备 three.js；与已实现的 ThreeLayer 是不同类；含 ThreejsLayerError / ThreejsRenderContext |
 | WebGLCustomLayer 自定义着色器 | ⬜ | 含 Attribute / BlendFunc / Draw / RenderState / Texture / WebGLCustomLayerError |

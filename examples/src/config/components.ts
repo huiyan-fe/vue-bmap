@@ -70,6 +70,9 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'polyline-layer', name: 'PolylineLayer', category: 'Layer', description: '线图层（4.0+，v1.0.6 新增）' },
   { id: 'polygon-layer', name: 'PolygonLayer', category: 'Layer', description: '面图层（4.0+，v1.0.6 新增）' },
   { id: 'text-layer', name: 'TextLayer', category: 'Layer', description: '文本图层（4.0+，v1.0.6 新增）' },
+  { id: 'bar-layer', name: 'BarLayer', category: 'Layer', description: '柱状图层（4.0+，v1.0.6 新增）' },
+  { id: 'fly-line-layer', name: 'FlyLineLayer', category: 'Layer', description: '飞线图层（4.0+，v1.0.6 新增）' },
+  { id: 'track-line', name: 'TrackLine', category: 'Layer', description: '轨迹线图层（4.0+，v1.0.6 新增）' },
 
   // Service
   { id: 'geocoder', name: 'useGeocoder', category: 'Service', description: '地理编码' },

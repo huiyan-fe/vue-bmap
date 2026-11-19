@@ -16,7 +16,8 @@ export const CHANGELOG: ChangelogEntry[] = [
     changes: [
       'feat：新增数据可视化图层（4.0+）——HeatmapLayer 热力图（size/unit/gradient/weightField 等）、ClusterLayer 点聚合（clusterRadius/clusterIcon/singleStyle/updateRealTime 等，点击聚合点自动 fitView），均支持 setData 数据驱动与事件',
       'feat：新增数据可视化图层 PointLayer（shape/size/icon/锚点等）、PolylineLayer（strokeStyle/纹理贴线等）、PolygonLayer（填充/纹理填充等）、TextLayer（文案/碰撞剔除/锚点等）',
-      'test：新增 6 个可视化图层测试页；examples 补齐导航、API 文档与示例',
+      'feat：新增数据可视化图层 BarLayer（3D 柱体，value 驱动柱高/多段堆叠）、FlyLineLayer（飞线动画，arc/path 模式）、TrackLine（轨迹播放，命令式 ref 提供 play/pause/stop/setFollowOptions，progress/statuschange 事件）',
+      'test：新增 9 个可视化图层测试页；examples 补齐导航、API 文档与示例',
     ],
   },
   {

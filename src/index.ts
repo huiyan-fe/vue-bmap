@@ -59,6 +59,7 @@ export {
   PixelLayer, BaiduLayer, PanoramaCoverageLayer, FeatureLayer, DOMLayer,
   PointShapeLayer, PointIconLayer, FillLayer, LineLayer, ThreeLayer,
   HeatmapLayer, ClusterLayer, PointLayer, PolylineLayer, PolygonLayer, TextLayer,
+  BarLayer, FlyLineLayer, TrackLine,
 } from './components/Layer';
 export type {
   TileLayerProps, NormalLayerProps, GeoJSONLayerProps, DistrictLayerProps,
@@ -73,6 +74,8 @@ export type {
   HeatmapLayerOptions, HeatmapLayerProps, ClusterLayerOptions, ClusterLayerProps,
   PointLayerOptions, PointLayerProps, PolylineLayerOptions, PolylineLayerProps,
   PolygonLayerOptions, PolygonLayerProps, TextLayerOptions, TextLayerProps,
+  BarLayerOptions, BarLayerProps, FlyLineLayerOptions, FlyLineLayerProps,
+  TrackLineOptions, TrackLineProps, TrackLineRef,
 } from './components/Layer';
 
 // ─── 右键菜单 / 全景 ───

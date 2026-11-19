@@ -5,6 +5,7 @@ import {
   PointIconLayer, PointShapeLayer, PanoramaCoverageLayer,
   ThreeLayer,
   HeatmapLayer, ClusterLayer,
+  BarLayer, FlyLineLayer, TrackLine,
 } from '@baidumap/vue-bmap';
 import type { ThreeLayerRef } from '@baidumap/vue-bmap';
 import { MapContainer } from '../components/MapContainer';
@@ -640,6 +641,174 @@ const data = { type: 'FeatureCollection', features: Array.from({ length: 150 }, 
       stroke-color="#ffffff" :stroke-weight="2" font-weight="bold"
       :collides="true" :wait-time="100" />
   </Map>
+</template>`,
+});
+
+// ─── BarLayer 柱状图数据（v1.0.6 新增）：properties.value 0~1000 驱动柱高 ───
+function randomBarData(count: number) {
+  const features = Array.from({ length: count }, (_, i) => ({
+    type: 'Feature' as const,
+    geometry: { type: 'Point' as const, coordinates: [116.34 + Math.random() * 0.14, 39.88 + Math.random() * 0.09] },
+    properties: { id: i, name: `柱${i}`, value: Math.floor(Math.random() * 1000) },
+  }));
+  return { type: 'FeatureCollection' as const, features };
+}
+
+// ─── TrackLine 轨迹数据（v1.0.6 新增）：平滑闭合轨迹 + 等长时间戳数组 ───
+function trackData(count: number) {
+  const coordinates = Array.from({ length: count }, (_, i) => [
+    116.404 + Math.sin(i / 6) * 0.02,
+    39.915 + Math.cos(i / 8) * 0.015,
+  ]);
+  return {
+    type: 'Feature' as const,
+    geometry: { type: 'LineString' as const, coordinates },
+    properties: { id: 1, name: '演示轨迹', time: coordinates.map((_, i) => i * 2) },
+  };
+}
+
+// ─── BarLayer 柱状图层（v1.0.6 新增） ───
+registerDemo('bar-layer', {
+  component: defineComponent({
+    name: 'BarLayerDemo',
+    setup: () => () => h(MapContainer, { center: C, zoom: 12 }, {
+      default: () => [h(BarLayer as any, {
+        data: randomBarData(80),
+        color: 'rgba(0, 180, 0, 1)',
+        // size/height 用米单位的「小数值」：柱体半径 1500m、高 3000m，在 zoom 12 下
+        // 每个柱子清晰可辨；沿用 40000/80000 会占满整个视野、看不见柱形
+        size: 1500,
+        height: 3000,
+        edgeCount: 50,
+      })],
+    }),
+  }),
+  code: `<!-- BarLayer（v1.0.6 新增）：柱状图层，data 为 GeoJSON 点数据；柱高默认取 properties.value（0~1000）。
+  unit 默认 'm'（size 单位是米）；切 unit='px' 时 size 应为像素量级（如 30），沿用米单位大数值会被视锥裁掉看不见 -->
+<script setup>
+import { Map, BarLayer } from '@baidumap/vue-bmap';
+const data = { type: 'FeatureCollection', features: Array.from({ length: 80 }, (_, i) => ({
+  type: 'Feature',
+  geometry: { type: 'Point', coordinates: [116.34 + Math.random() * 0.14, 39.88 + Math.random() * 0.09] },
+  properties: { id: i, value: Math.floor(Math.random() * 1000) },
+})) };
+<\/script>
+<template>
+  <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="12">
+    <BarLayer :data="data" color="rgba(0, 180, 0, 1)"
+      :size="1500" :height="3000" :edge-count="50" />
+  </Map>
+</template>`,
+});
+
+// ─── FlyLineLayer 飞线图层（v1.0.6 新增） ───
+registerDemo('fly-line-layer', {
+  component: defineComponent({
+    name: 'FlyLineLayerDemo',
+    setup: () => () => h(MapContainer, { center: C, zoom: 12 }, {
+      default: () => [h(FlyLineLayer as any, {
+        data: randomLinesData(6),
+        strokeColor: 'rgba(255, 71, 26, 0.9)',
+        mode: 'arc',
+        arcHeight: 0.3,
+        duration: 2,
+      })],
+    }),
+  }),
+  code: `<!-- FlyLineLayer（v1.0.6 新增）：飞线图层，data 为 GeoJSON 线数据；mode "arc" 取首末两点生成流动弧线 -->
+<script setup>
+import { Map, FlyLineLayer } from '@baidumap/vue-bmap';
+const data = { type: 'FeatureCollection', features: Array.from({ length: 6 }, (_, i) => ({
+  type: 'Feature',
+  geometry: { type: 'LineString', coordinates: [[116.34 + Math.random() * 0.14, 39.88 + Math.random() * 0.09], [116.35 + Math.random() * 0.14, 39.89 + Math.random() * 0.09]] },
+  properties: { id: i, name: '线' + i },
+})) };
+<\/script>
+<template>
+  <Map :center="{ lng: 116.404, lat: 39.915 }" :zoom="12">
+    <FlyLineLayer :data="data" stroke-color="rgba(255, 71, 26, 0.9)"
+      mode="arc" :arc-height="0.3" :duration="2" />
+  </Map>
+</template>`,
+});
+
+// ─── TrackLine 轨迹线（v1.0.6 新增） ───
+registerDemo('track-line', {
+  component: defineComponent({
+    name: 'TrackLineDemo',
+    setup() {
+      const trackRef = ref<any>(null);
+      return () => h(MapContainer, { center: C, zoom: 13 }, {
+        default: () => [
+          h(TrackLine as any, {
+            ref: trackRef,
+            data: trackData(40),
+            duration: 30,
+            autoStart: true,
+            autoFollow: true,
+            // 车辆图标（movePoint）：贴地图标，随缩放保持屏幕尺寸
+            movePoint: {
+              type: 'ground',
+              url: 'https://jsapi-demo.bj.bcebos.com/images/markers/car.png',
+              size: [22, 44],
+              adjustSize: true,
+            },
+          }),
+          h('div', { style: 'position:absolute;top:12px;left:12px;z-index:999;display:flex;gap:8px;' }, [
+            h('button', { onClick: () => trackRef.value?.start() }, '播放'),
+            h('button', { onClick: () => trackRef.value?.resume() }, '继续'),
+            h('button', { onClick: () => trackRef.value?.pause() }, '暂停'),
+            h('button', { onClick: () => trackRef.value?.stop() }, '停止'),
+          ]),
+        ],
+      });
+    },
+  }),
+  code: `<!-- TrackLine（v1.0.6 新增）：轨迹线，data 为 GeoJSON LineString；播放时间线默认取 properties.time（与 coordinates 等长），播放控制走 ref 句柄（方法名对齐 JSAPI：start/resume/pause/stop） -->
+<script setup>
+import { ref } from 'vue';
+import { Map, TrackLine } from '@baidumap/vue-bmap';
+
+const center = { lng: 116.404, lat: 39.915 };
+const trackRef = ref();
+
+// 40 个点的平滑闭合轨迹，properties.time 为等长时间戳（秒）
+const points = Array.from({ length: 40 }, (_, i) => [
+  center.lng + Math.sin(i / 6) * 0.02,
+  center.lat + Math.cos(i / 8) * 0.015,
+]);
+const data = {
+  type: 'Feature',
+  geometry: { type: 'LineString', coordinates: points },
+  properties: { id: 1, name: '演示轨迹', time: points.map((_, i) => i * 2) },
+};
+
+// 车辆图标（movePoint）：贴地图标，随缩放保持屏幕尺寸
+const movePoint = {
+  type: 'ground',
+  url: 'https://jsapi-demo.bj.bcebos.com/images/markers/car.png',
+  size: [22, 44],
+  adjustSize: true,
+};
+
+// 命令式播放控制（组件 expose 同名句柄，方法名对齐 JSAPI TrackLine）
+const start = () => trackRef.value?.start();
+const resume = () => trackRef.value?.resume();
+const pause = () => trackRef.value?.pause();
+const stop = () => trackRef.value?.stop();
+const onProgress = (e) => console.log('progress', e.value?.process);
+<\/script>
+<template>
+  <Map :center="center" :zoom="13">
+    <TrackLine ref="trackRef" :data="data" :duration="30" :auto-start="true"
+      :auto-follow="true" :move-point="movePoint" :on-progress="onProgress" />
+  </Map>
+  <div style="position:absolute;top:12px;left:12px;z-index:999;display:flex;gap:8px;">
+    <button @click="start">播放</button>
+    <button @click="resume">继续</button>
+    <button @click="pause">暂停</button>
+    <button @click="stop">停止</button>
+  </div>
 </template>`,
 });
 

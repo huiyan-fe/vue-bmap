@@ -32,6 +32,7 @@ const V4_LAYER_CLASS: Capability[] = [
   // HeatmapLayer 是组件名（SDK 类为 Heatmap），两个名字都注册，供 examples 能力判断与 driver 门控共用
   'Heatmap', 'HeatmapLayer', 'ClusterLayer',
   'PointLayer', 'PolylineLayer', 'PolygonLayer', 'TextLayer',
+  'BarLayer', 'FlyLineLayer', 'TrackLine',
 ];
 
 // ── 4.0+ Map 图层方法 ──

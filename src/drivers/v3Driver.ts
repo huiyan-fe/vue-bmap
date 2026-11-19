@@ -347,6 +347,9 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createPolylineLayer: () => { reportUnsupported('PolylineLayer', version, behavior); return null; },
     createPolygonLayer: () => { reportUnsupported('PolygonLayer', version, behavior); return null; },
     createTextLayer: () => { reportUnsupported('TextLayer', version, behavior); return null; },
+    createBarLayer: () => { reportUnsupported('BarLayer', version, behavior); return null; },
+    createFlyLineLayer: () => { reportUnsupported('FlyLineLayer', version, behavior); return null; },
+    createTrackLine: () => { reportUnsupported('TrackLine', version, behavior); return null; },
     // PanoramaCoverageLayer：v3 SDK 也导出该类（publish.js:81），走 base 的真实实现
     // v3-only 图层在 v3 直接创建（v4 capability 闭包不包含这些类）
     createCustomLayer: (o) => {

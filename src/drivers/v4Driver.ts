@@ -1417,6 +1417,10 @@ export function createV4Driver(
     createPolylineLayer: (o) => createLayerFactory('PolylineLayer', () => new rawSDK.PolylineLayer(o), 'custom'),
     createPolygonLayer: (o) => createLayerFactory('PolygonLayer', () => new rawSDK.PolygonLayer(o), 'custom'),
     createTextLayer: (o) => createLayerFactory('TextLayer', () => new rawSDK.TextLayer(o), 'custom'),
+    // 特效图层（4.0+ Visualization）
+    createBarLayer: (o) => createLayerFactory('BarLayer', () => new rawSDK.BarLayer(o), 'custom'),
+    createFlyLineLayer: (o) => createLayerFactory('FlyLineLayer', () => new rawSDK.FlyLineLayer(o), 'custom'),
+    createTrackLine: (o) => createLayerFactory('TrackLine', () => new rawSDK.TrackLine(o), 'custom'),
 
     // ─────────────── 30. ContextMenu ───────────────
     createContextMenu: (o) => createOverlayFactory('ContextMenu', () => new rawSDK.ContextMenu(o), 'contextMenu'),
