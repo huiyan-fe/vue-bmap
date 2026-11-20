@@ -161,6 +161,8 @@ class CollisionManager {
 function toRawPoint(SDK: BMapSDK, p: Point | null | undefined): BMap.Point {
   if (!p) return p as unknown as BMap.Point;
   if (p instanceof SDK.Point) return p;
+  // GeoJSON 坐标是 [lng, lat] 数组；普通写法是 {lng, lat} 对象，两种都支持
+  if (Array.isArray(p)) return new SDK.Point(Number(p[0]), Number(p[1]));
   return new SDK.Point(p.lng, p.lat);
 }
 /** 官方 IconOptions 只声明了 anchor/imageOffset/imageSize，其余几项是 SDK 额外支持的 */
@@ -251,9 +253,27 @@ function toRawPointGroups(SDK: BMapSDK, groups: Point[][] | null | undefined): B
 function isNestedPath(path: unknown): path is Point[][] {
   return Array.isArray(path) && Array.isArray(path[0]);
 }
-/** Prism 路径：单坐标串走 toRawPoints，多坐标串逐串转换 */
-function toRawPathOrPaths(SDK: BMapSDK, path: Point[] | Point[][] | null | undefined): BMap.Point[] | BMap.Point[][] {
-  return isNestedPath(path) ? toRawPointGroups(SDK, path) : toRawPoints(SDK, path as Point[]);
+/**
+ * GeoJSON 路径归一化：原生 BMap.Polygon 支持直接传 GeoJSON（Feature / geometry），
+ * 这里取出 coordinates，后续再转成 SDK Point[] / Point[][]。
+ */
+function normalizeGeoJsonPath(path: unknown): unknown {
+  if (path && typeof path === 'object' && !Array.isArray(path)) {
+    const p = path as Record<string, any>;
+    if (p.type === 'Feature') {
+      return p.geometry?.coordinates ?? path;
+    }
+    if (typeof p.type === 'string' && p.type !== 'FeatureCollection' && 'coordinates' in p) {
+      return p.coordinates;
+    }
+  }
+  return path;
+}
+
+/** Prism / Polygon 路径：单坐标串走 toRawPoints，多坐标串逐串转换；GeoJSON 先取 coordinates */
+function toRawPathOrPaths(SDK: BMapSDK, path: unknown): BMap.Point[] | BMap.Point[][] {
+  const normalized = normalizeGeoJsonPath(path);
+  return isNestedPath(normalized) ? toRawPointGroups(SDK, normalized) : toRawPoints(SDK, normalized as Point[]);
 }
 /** 编辑态节点图标 node/nodeT：把 {url,size} 图标配置转成 SDK Icon 实例写入 ctorOpts（enableEditing 时生效） */
 function applyEditNodeIcons(SDK: BMapSDK, raw: Record<string, unknown> | undefined, ctorOpts: Record<string, unknown>): void {
@@ -1178,18 +1198,19 @@ export function createV4Driver(
     },
     setOverlayPath: (ov, path) => {
       try {
+        const normalized = normalizeGeoJsonPath(path);
         // PointCollection 用 setPoints 而非 setPath
         if (ov.type === 'pointCollection') {
-          rawOf(ov).setPoints?.(toRawPoints(rawSDK, path as Point[]));
+          rawOf(ov).setPoints?.(toRawPoints(rawSDK, normalized as Point[]));
           return;
         }
-        if (isNestedPath(path)) {
+        if (isNestedPath(normalized)) {
           // 只有 Polygon 的 setPath 支持多坐标串（Point[][]，镂空/多环，对齐 JSAPI）。
           // 其余（如 Prism）无法用多坐标串更新，交由 ctorOnlyProps/key 重建处理。
-          if (ov.type === 'polygon') rawOf(ov).setPath?.(toRawPointGroups(rawSDK, path));
+          if (ov.type === 'polygon') rawOf(ov).setPath?.(toRawPointGroups(rawSDK, normalized));
           return;
         }
-        rawOf(ov).setPath?.(toRawPoints(rawSDK, path as Point[]));
+        rawOf(ov).setPath?.(toRawPoints(rawSDK, normalized as Point[]));
       } catch { /* ignore */ }
     },
     setOverlayOptions: (ov, options) => {

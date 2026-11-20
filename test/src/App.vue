@@ -70,6 +70,7 @@ import TextLayerPage from './pages/layer/TextLayerPage.vue';
 import BarLayerPage from './pages/layer/BarLayerPage.vue';
 import FlyLineLayerPage from './pages/layer/FlyLineLayerPage.vue';
 import TrackLinePage from './pages/layer/TrackLinePage.vue';
+import TrackLineDemoPage from './pages/layer/TrackLineDemoPage.vue';
 import DeckglLayerPage from './pages/layer/DeckglLayerPage.vue';
 import ThreejsLayerPage from './pages/layer/ThreejsLayerPage.vue';
 import WebGLCustomLayerPage from './pages/layer/WebGLCustomLayerPage.vue';
@@ -162,6 +163,7 @@ const PAGE_MAP: Record<string, Component> = {
   'bar-layer': BarLayerPage,
   'fly-line-layer': FlyLineLayerPage,
   'track-line': TrackLinePage,
+  'track-line-demo': TrackLineDemoPage,
   'deckgl-layer': DeckglLayerPage,
   'threejs-layer': ThreejsLayerPage,
   'webgl-custom-layer': WebGLCustomLayerPage,

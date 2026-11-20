@@ -728,6 +728,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
   ],
   'cluster-layer': [
     { name: 'data', type: 'object', required: false, description: 'GeoJSON 数据（FeatureCollection / Feature[]），变化时调用 raw.setData()。' },
+    { name: 'renderStage', type: 'string', required: false, description: "渲染阶段（透传 SDK），默认 'tilelayer'；可选 'basemap' | 'overlay' | 'building' | 'poi'" },
     { name: 'clusterRadius', type: 'number', required: false, description: '聚合半径（px），默认 60' },
     { name: 'clusterMinPoints', type: 'number', required: false, description: '成簇最小点数，默认 2' },
     { name: 'clusterMinZoom', type: 'number', required: false, description: '聚合起始层级，默认 3' },
@@ -834,7 +835,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'fontSize', type: 'number', required: false, description: '字号（px），默认 14' },
     { name: 'fontFamily', type: 'string', required: false, description: '字体族' },
     { name: 'fontWeight', type: 'string | number', required: false, description: '字重（"normal" | "bold" 或 100-900）' },
-    { name: 'color', type: 'string', required: false, description: '文本颜色' },
+    { name: 'color', type: 'string | (properties) => string', required: false, description: '文本颜色，默认 #333333；也可传函数按要素动态取色' },
     { name: 'strokeColor', type: 'string', required: false, description: '文字描边颜色' },
     { name: 'strokeWeight', type: 'number', required: false, description: '文字描边宽度（px）' },
     { name: 'padding', type: 'number[]', required: false, description: '内边距 [上, 右, 下, 左]' },
@@ -864,6 +865,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
   ],
   'bar-layer': [
     { name: 'data', type: 'object', required: false, description: 'GeoJSON 数据（FeatureCollection / Feature[]），每个 feature 的 geometry 为 Point，柱体的量值/高度/尺寸/颜色可写在 properties（value / height / size / color，支持 number[] 多段堆叠与 function 逐要素求值）；变化时调用 raw.setData()。' },
+    { name: 'renderStage', type: 'string', required: false, description: "渲染阶段（透传 SDK），默认 'tilelayer'；可选 'basemap' | 'overlay' | 'building' | 'poi'" },
     { name: 'color', type: 'unknown', required: false, description: '柱体颜色，默认 rgba(0,180,0,1)；支持 css | css[] | function' },
     { name: 'size', type: 'number', required: false, description: '柱体半径基准，默认 50000，单位由 unit 决定' },
     { name: 'height', type: 'unknown', required: false, description: '柱体高度，默认 100000；支持 number | number[] | function' },
@@ -925,6 +927,9 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'autoStart', type: 'boolean', required: false, description: 'setData 后是否自动开始播放，默认 false' },
     { name: 'autoFollow', type: 'boolean', required: false, description: 'true 时地图视野自动跟随车辆，默认 false' },
     { name: 'followOptions', type: 'object', required: false, description: '跟随细节：{ tilt, heading, rotationDuration, rotationOffset, ... }' },
+    { name: 'renderStage', type: 'string', required: false, description: "渲染阶段，默认 'tilelayer'；可选 'basemap' | 'overlay' | 'building' | 'poi'" },
+    { name: 'isLinear', type: 'boolean', required: false, description: 'true 时线色沿轨迹按 linearTexture 色标渐变（覆盖 strokeColor）' },
+    { name: 'linearTexture', type: 'Array<[number, string]>', required: false, description: '渐变色标 [[位置0~1, css颜色], ...]，仅 isLinear 生效' },
     { name: 'visible', type: 'boolean', required: false, description: '是否可见' },
     { name: 'opacity', type: 'number', required: false, description: '图层透明度 (0-1)' },
     { name: 'minZoom', type: 'number', required: false, description: '最小显示级别' },
@@ -938,6 +943,8 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'onProgress', type: '(e: unknown) => void', required: false, description: '播放进度事件，value = { process, elapsed, trace, distance, point, angle }。' },
     { name: 'onStatusChange', type: '(e: unknown) => void', required: false, description: '播放状态变化事件。' },
     { name: 'ref.start() / pause() / stop() / resume()', type: '() => void', required: false, description: '播放控制命令式句柄（组件 expose 同名对象，ref 取用；方法名对齐 JSAPI。resume 从暂停处继续）' },
+    { name: 'ref.setSpeed() / getSpeed()', type: '(speed: number) => void | number', required: false, description: '设置 / 读取倍速（1 为原速），播放过程中可随时切换。' },
+    { name: 'ref.setOptions()', type: '(opts: object) => void', required: false, description: '运行时修改样式/选项（isLinear / linearTexture / passedColor / strokeWeight 等），播放进度保留。' },
     { name: 'ref.setFollowOptions()', type: '(opts: object) => void', required: false, description: '运行时更新跟随细节（tilt / heading / rotationDuration / rotationOffset 等）。' },
   ],
   'deckgl-layer': [

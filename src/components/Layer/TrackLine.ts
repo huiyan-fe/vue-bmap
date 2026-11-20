@@ -56,6 +56,12 @@ export interface TrackLineOptions {
   autoFollow?: boolean;
   /** 跟随细节：{ tilt, heading, rotationDuration, rotationOffset, ... } */
   followOptions?: Record<string, unknown>;
+  /** 渲染阶段（'basemap' | 'tilelayer' | 'overlay' | 'building' | 'poi'），默认 'tilelayer' */
+  renderStage?: string;
+  /** true 时线色沿轨迹按 linearTexture 色标渐变（覆盖 strokeColor） */
+  isLinear?: boolean;
+  /** 渐变色标 [[位置0~1, css颜色], ...]，仅 isLinear 生效 */
+  linearTexture?: Array<[number, string]>;
   opacity?: number;
   visible?: boolean;
   minZoom?: number;
@@ -78,6 +84,12 @@ export interface TrackLineRef {
   resume: () => void;
   pause: () => void;
   stop: () => void;
+  /** 设置倍速（1 为原速） */
+  setSpeed: (speed: number) => void;
+  /** 读取当前倍速 */
+  getSpeed: () => number;
+  /** 运行时修改样式/选项（isLinear / linearTexture / passedColor / strokeWeight 等） */
+  setOptions: (opts: Record<string, unknown>) => void;
   /** 开启/关闭地图视野跟随车辆（setAutoFollow）；跟随细节用 setFollowOptions 调整 */
   setAutoFollow: (enable: boolean) => void;
   setFollowOptions: (opts: Record<string, unknown>) => void;
@@ -116,6 +128,9 @@ export const TrackLine = defineComponent({
     autoStart: { type: Boolean, default: undefined },
     autoFollow: { type: Boolean, default: undefined },
     followOptions: { type: Object as PropType<Record<string, unknown>>, default: undefined },
+    renderStage: { type: String, default: undefined },
+    isLinear: { type: Boolean, default: undefined },
+    linearTexture: { type: Array as PropType<Array<[number, string]>>, default: undefined },
     opacity: { type: Number, default: undefined },
     visible: { type: Boolean, default: undefined },
     minZoom: { type: Number, default: undefined },
@@ -144,6 +159,7 @@ export const TrackLine = defineComponent({
       props.duration, props.speedMode, props.timestampKey,
       props.movePoint,
       props.autoStart, props.autoFollow, props.followOptions,
+      props.renderStage, props.isLinear, props.linearTexture,
       props.opacity, props.visible, props.minZoom, props.maxZoom, props.zIndex,
       props.referCenter,
     ]));
@@ -164,6 +180,7 @@ export const TrackLine = defineComponent({
       put('duration', props.duration); put('speedMode', props.speedMode); put('timestampKey', props.timestampKey);
       put('movePoint', props.movePoint);
       put('autoStart', props.autoStart); put('autoFollow', props.autoFollow); put('followOptions', props.followOptions);
+      put('renderStage', props.renderStage); put('isLinear', props.isLinear); put('linearTexture', props.linearTexture);
       put('opacity', props.opacity); put('visible', props.visible);
       put('minZoom', props.minZoom); put('maxZoom', props.maxZoom); put('zIndex', props.zIndex);
       put('referCenter', props.referCenter);
@@ -211,6 +228,9 @@ export const TrackLine = defineComponent({
       resume: () => { try { rawOf()?.resume?.(); } catch { /* ignore */ } },
       pause: () => { try { rawOf()?.pause?.(); } catch { /* ignore */ } },
       stop: () => { try { rawOf()?.stop?.(); } catch { /* ignore */ } },
+      setSpeed: (speed: number) => { try { rawOf()?.setSpeed?.(speed); } catch { /* ignore */ } },
+      getSpeed: () => { try { return Number(rawOf()?.getSpeed?.() ?? 1); } catch { return 1; } },
+      setOptions: (o: Record<string, unknown>) => { try { rawOf()?.setOptions?.(o); } catch { /* ignore */ } },
       /** 开启/关闭跟随（SDK setAutoFollow）——只有开启后视野才会跟着车走 */
       setAutoFollow: (enable: boolean) => { try { rawOf()?.setAutoFollow?.(enable); } catch { /* ignore */ } },
       setFollowOptions: (o: Record<string, unknown>) => { try { rawOf()?.setFollowOptions?.(o); } catch { /* ignore */ } },

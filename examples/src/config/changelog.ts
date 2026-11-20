@@ -16,7 +16,8 @@ export const CHANGELOG: ChangelogEntry[] = [
     changes: [
       'feat：新增数据可视化图层（4.0+）——HeatmapLayer 热力图（size/unit/gradient/weightField 等）、ClusterLayer 点聚合（clusterRadius/clusterIcon/singleStyle/updateRealTime 等，点击聚合点自动 fitView），均支持 setData 数据驱动与事件',
       'feat：新增数据可视化图层 PointLayer（shape/size/icon/锚点等）、PolylineLayer（strokeStyle/纹理贴线等）、PolygonLayer（填充/纹理填充等）、TextLayer（文案/碰撞剔除/锚点等）',
-      'feat：新增数据可视化图层 BarLayer（3D 柱体，value 驱动柱高/多段堆叠）、FlyLineLayer（飞线动画，arc/path 模式）、TrackLine（轨迹播放，命令式 ref 提供 start/resume/pause/stop/setAutoFollow/setFollowOptions，progress/statuschange 事件，movePoint 车辆图标）',
+      'feat：新增数据可视化图层 BarLayer（3D 柱体，value 驱动柱高/多段堆叠）、FlyLineLayer（飞线动画，arc/path 模式）、TrackLine（轨迹播放，命令式 ref 提供 start/resume/pause/stop/setSpeed/getSpeed/setOptions/setAutoFollow/setFollowOptions，progress/statuschange 事件，movePoint 车辆图标，renderStage/isLinear/linearTexture）',
+      'feat：BarLayer / ClusterLayer 支持 renderStage；TextLayer 的 color 支持函数按要素动态取色；三个图层均补齐 test 页与文档',
       'feat：新增数据可视化图层 WebGLCustomLayer（自定义着色器，attributes/uniforms/textures/draw 声明式 + ref 运行时 setter）、DeckglLayer（deck.gl 接入，宿主自备 window.deck）、ThreejsLayer（three.js 接入，宿主自备 window.THREE）；GeoJSONSource 静态工具（normalize/replaceGeometry/extractPoints/toLineStrings/toPolygons）',
       'feat：新增 useEBikeRoute（电动车路线，4.0+）；driver 提供 createEntity（数据实体，配合 MVTLayer 等）',
       '类型：新增 MapLabelStyle / StyleExpress / ParkingSpotOptions、TruckRouteResult/TruckRouteLine/TruckRoutePlan/TruckTrafficCondition、LocalSearchSearchOption，以及 VisualPickEvent / GraphEventMap / ViewAnimationEventMap / TrackLineEventMap 等事件映射类型',

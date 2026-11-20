@@ -20,6 +20,8 @@ import { debugWarn } from '../../utils/debugWarn';
 import type { LayerHandle } from '../../types';
 
 export interface ClusterLayerOptions {
+  /** 渲染阶段（如 'poi'），透传给 SDK */
+  renderStage?: string;
   /** 聚合半径（px），默认 60 */
   clusterRadius?: number;
   /** 成簇最小点数，默认 2 */
@@ -70,6 +72,7 @@ export const ClusterLayer = defineComponent({
   name: 'ClusterLayer',
   props: {
     data: { type: Object as PropType<object>, default: undefined },
+    renderStage: { type: String, default: undefined },
     clusterRadius: { type: Number, default: undefined },
     clusterMinPoints: { type: Number, default: undefined },
     clusterMinZoom: { type: Number, default: undefined },
@@ -102,6 +105,7 @@ export const ClusterLayer = defineComponent({
     let unsubs: Array<() => void> = [];
 
     const ctorKey = computed(() => stableStringify([
+      props.renderStage,
       props.clusterRadius, props.clusterMinPoints, props.clusterMinZoom, props.clusterMaxZoom,
       props.tileSize, props.fitViewOnClick, props.fitViewMargin,
       props.updateRealTime, props.waitTime,
@@ -116,6 +120,7 @@ export const ClusterLayer = defineComponent({
       const { map, driver } = ctx;
       const opts: Record<string, unknown> = {};
       const put = (k: string, v: unknown) => { if (v !== undefined) opts[k] = v; };
+      put('renderStage', props.renderStage);
       put('clusterRadius', props.clusterRadius); put('clusterMinPoints', props.clusterMinPoints);
       put('clusterMinZoom', props.clusterMinZoom); put('clusterMaxZoom', props.clusterMaxZoom);
       put('tileSize', props.tileSize); put('fitViewOnClick', props.fitViewOnClick);

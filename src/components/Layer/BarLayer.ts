@@ -18,6 +18,8 @@ import { debugWarn } from '../../utils/debugWarn';
 import type { LayerHandle } from '../../types';
 
 export interface BarLayerOptions {
+  /** 渲染阶段（如 'poi'），透传给 SDK */
+  renderStage?: string;
   /** 柱体颜色，默认 'rgba(0, 180, 0, 1)'；支持 css | css[] | function */
   color?: unknown;
   /** 柱体半径基准，默认 50000，单位由 unit 决定 */
@@ -54,6 +56,7 @@ export const BarLayer = defineComponent({
   name: 'BarLayer',
   props: {
     data: { type: Object as PropType<object>, default: undefined },
+    renderStage: { type: String, default: undefined },
     color: { default: undefined },
     size: { type: Number, default: undefined },
     height: { default: undefined },
@@ -79,6 +82,7 @@ export const BarLayer = defineComponent({
     let unsubs: Array<() => void> = [];
 
     const ctorKey = computed(() => stableStringify([
+      props.renderStage,
       props.color, props.size, props.height, props.edgeCount, props.unit,
       props.opacity, props.visible, props.minZoom, props.maxZoom, props.zIndex,
       props.enablePicked, props.referCenter,
@@ -90,6 +94,7 @@ export const BarLayer = defineComponent({
       const { map, driver } = ctx;
       const opts: Record<string, unknown> = {};
       const put = (k: string, v: unknown) => { if (v !== undefined) opts[k] = v; };
+      put('renderStage', props.renderStage);
       put('color', props.color); put('size', props.size); put('height', props.height);
       put('edgeCount', props.edgeCount); put('unit', props.unit);
       put('opacity', props.opacity); put('visible', props.visible);

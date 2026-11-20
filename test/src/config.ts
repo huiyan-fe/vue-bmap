@@ -73,6 +73,7 @@ export const PAGES: TestPage[] = [
   { id: 'bar-layer', name: 'BarLayer', category: L, ready: true },
   { id: 'fly-line-layer', name: 'FlyLineLayer', category: L, ready: true },
   { id: 'track-line', name: 'TrackLine', category: L, ready: true },
+  { id: 'track-line-demo', name: 'TrackLine 官方示例', category: L, ready: true },
   { id: 'deckgl-layer', name: 'DeckglLayer', category: L, ready: true },
   { id: 'threejs-layer', name: 'ThreejsLayer', category: L, ready: true },
   { id: 'webgl-custom-layer', name: 'WebGLCustomLayer', category: L, ready: true },

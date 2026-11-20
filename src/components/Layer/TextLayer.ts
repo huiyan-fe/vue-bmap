@@ -27,8 +27,8 @@ export interface TextLayerOptions {
   fontFamily?: string;
   /** 字重：'normal' | 'bold' | 数字 */
   fontWeight?: string | number;
-  /** 文字颜色，默认 '#333333' */
-  color?: string;
+  /** 文字颜色，默认 '#333333'；也可传 function(properties) -> color 按要素动态取色 */
+  color?: string | ((properties: unknown) => string);
   /** 描边色 */
   strokeColor?: string;
   /** 描边宽度（px） */
@@ -89,7 +89,7 @@ export const TextLayer = defineComponent({
     fontSize: { type: Number, default: undefined },
     fontFamily: { type: String, default: undefined },
     fontWeight: { type: [String, Number] as PropType<string | number>, default: undefined },
-    color: { type: String, default: undefined },
+    color: { type: [String, Function] as PropType<string | ((properties: unknown) => string)>, default: undefined },
     strokeColor: { type: String, default: undefined },
     strokeWeight: { type: Number, default: undefined },
     padding: { type: Array as PropType<number[]>, default: undefined },
